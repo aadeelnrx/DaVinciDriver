@@ -9,3 +9,5 @@ It is based on:
 * TB6612 H-bridge motor driver on Pololu breakout board
 * NRF24L01+ radio link for telemetry and remote control
 * VS1833 Infrared remote control
+
+License: GPL v2.0
