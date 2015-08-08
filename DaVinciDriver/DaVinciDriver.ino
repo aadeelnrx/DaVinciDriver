@@ -1,5 +1,5 @@
 /*
- DaVincoDriver
+ DaVinciDriver
 
  This program reads the values from the sensor, stores them on SD and transmits them
  via the radio
