@@ -24,7 +24,7 @@
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
 #define RADIO_ON         0 // Radio transmission
-#define IR_ON            1 // IR transmission
+#define IR_ON            0 // IR transmission
 #define SD_CARD_ON       1 // Logging to SD card
 
 // the digital pins that connect to the LEDs
@@ -68,8 +68,10 @@ const uint64_t pipe = 0xE8E8F0F0E1LL; // Define the transmit pipe
 RF24 radio(CE_PIN, CSN_PIN_Radio);
 
 // Define IR variables
+#if IR_ON
 IRrecv irrecv(IR_receiver);           // create instance of 'irrecv'
 decode_results results;            // create instance of 'decode_results'
+#endif
 
 // Set up BNO055 sensor
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
@@ -102,6 +104,7 @@ void error(char *str)
   while(1);
 }
 
+#if IR_ON
 void translateIR() // takes action based on IR code received
 // describing Remote IR codes 
 {
@@ -225,6 +228,7 @@ void translateIR() // takes action based on IR code received
 #endif  
   }// End Case
 } //END translateIR
+#endif
 
 //------------------------------------------------------------------------
 // Motor on full speed:
