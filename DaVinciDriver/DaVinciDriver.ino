@@ -10,6 +10,7 @@
 
 #include <SPI.h>
 #include <SD.h>
+#include <IRremote.h>
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Wire.h>
@@ -23,7 +24,8 @@
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
 #define RADIO_ON         0 // Radio transmission
-#define SD_CARD_ON       0 // Logging to SD card
+#define IR_ON            1 // IR transmission
+#define SD_CARD_ON       1 // Logging to SD card
 
 // the digital pins that connect to the LEDs
 #define redLEDpin 13
@@ -37,6 +39,9 @@
 #define CE_PIN   8
 #define CSN_PIN_Radio 10
 #define CSN_PIN_CF 9
+
+// IR receiver digital pin
+#define IR_receiver 4
 
 // Motor driver interface (PWM on these pins uses timer 0):
 #define motorIn1Pin 23
@@ -61,6 +66,10 @@ const uint64_t pipe = 0xE8E8F0F0E1LL; // Define the transmit pipe
 
 // Set up nRF24L01 radio on SPI bus plus pins 9 & 10
 RF24 radio(CE_PIN, CSN_PIN_Radio);
+
+// Define IR variables
+IRrecv irrecv(IR_receiver);           // create instance of 'irrecv'
+decode_results results;            // create instance of 'decode_results'
 
 // Set up BNO055 sensor
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
@@ -92,6 +101,130 @@ void error(char *str)
   
   while(1);
 }
+
+void translateIR() // takes action based on IR code received
+// describing Remote IR codes 
+{
+  switch(results.value)
+  {
+  case 0xFFA25D: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" CH-"); 
+#endif  
+    break;
+  case 0xFF629D: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" CH");   
+#endif  
+    break;
+  case 0xFFE21D: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" CH+");  
+#endif  
+    break;
+  case 0xFF22DD: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" REVERSE");    
+#endif  
+    break;
+  case 0xFF02FD: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" FORWARD");    
+#endif  
+    break;
+  case 0xFFC23D: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" PLAY/PAUSE"); 
+#endif  
+    break;
+  case 0xFFE01F: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" -");    
+#endif  
+    break;
+  case 0xFFA857: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" +");    
+#endif  
+    break;
+  case 0xFF906F: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" EQ");   
+#endif  
+    break;
+  case 0xFF6897: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 0");    
+#endif  
+    break;
+  case 0xFF9867: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 100+"); 
+#endif  
+    break;
+  case 0xFFB04F: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 200+"); 
+#endif  
+    break;
+  case 0xFF30CF: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 1");    
+#endif  
+    break;
+  case 0xFF18E7: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 2");    
+#endif  
+    break;
+  case 0xFF7A85: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 3");    
+#endif  
+    break;
+  case 0xFF10EF: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 4");    
+#endif  
+    break;
+  case 0xFF38C7: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 5");    
+#endif  
+    break;
+  case 0xFF5AA5: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 6");    
+#endif  
+    break;
+  case 0xFF42BD: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 7");    
+#endif  
+    break;
+  case 0xFF4AB5: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 8");    
+#endif  
+    break;
+  case 0xFF52AD: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" 9");    
+#endif  
+    break;
+  case 0xFFFFFFFF: 
+#if ECHO_TO_SERIAL 
+    Serial.println(" REPEAT"); 
+#endif  
+    break;  
+
+  default: 
+#if ECHO_TO_SERIAL 
+    Serial.print(" other button   :");
+    Serial.println(results.value, HEX);
+#endif  
+  }// End Case
+} //END translateIR
 
 //------------------------------------------------------------------------
 // Motor on full speed:
@@ -195,6 +328,10 @@ void setup(void)
   radio.openWritingPipe(pipe);
 #endif //RADIO_ON
 
+#if IR_ON  
+  irrecv.enableIRIn(); // Start the IR receiver
+#endif
+
   // Set PWM frequency.  The motor diver can handle 100 kHz max.
   // Setting the frequency on one pin changes it for all other
   // pins on this timer as well (5, 6, 9, 10, 20, 21, 22, 23)
@@ -241,6 +378,15 @@ void loop(void)
   delay(delayTime);
   
   digitalWrite(greenLEDpin, HIGH);
+
+#if IR_ON
+  if (irrecv.decode(&results)) // have we received an IR signal?
+  {
+//    Serial.println(results.value, HEX);  UN Comment to see raw values
+    translateIR(); 
+    irrecv.resume(); // receive the next value
+  }  
+#endif
 
   // log milliseconds since starting
   uint32_t m = millis();
