@@ -6,12 +6,17 @@
  
  https://github.com/eedala/DaVinciDriver
 
+ Tools -> Board: Teensy 3.1
+ Tools -> USB Type: Serial
+ Tools -> CPU Speed: 72 MHz
+ 
  */
 
 #include <SPI.h>
 #include <SD.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <printf.h>  // debugging for NRF24L01
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -22,26 +27,27 @@
 #define LOG_INTERVAL    55 //75 // mills between entries
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
-#define RADIO_ON         0 // Radio transmission
+#define RADIO_ON         1 // Radio transmission
 #define SD_CARD_ON       0 // Logging to SD card
 
 // the digital pins that connect to the LEDs
-#define redLEDpin 13
-#define greenLEDpin 13
+#define red_LED_PIN 13
+#define green_LED_PIN 13
 
 // The pins that connect to the sensors
-#define speedPin 3              // digital 3, interrupt 0
-#define voltPin A1              // analog 1
+#define speed_PIN 3              // digital 3, interrupt 0
+#define volt_PIN A1              // analog 1
 
 // The SPI pins for CF and Radio
-#define CE_PIN   8
-#define CSN_PIN_Radio 10
-#define CSN_PIN_CF 9
+#define CE_Radio_PIN   8
+#define CSN_Radio_PIN 10
+#define SCK_PIN 14   // SPI bus uses pin 14 instead of pin 13 (used for LED)
+#define CSN_CF_PIN 9
 
 // Motor driver interface (PWM on these pins uses timer 0):
-#define motorIn1Pin 23
-#define motorIn2Pin 22
-#define motorPwmPin 21
+#define motor_In1_PIN 23
+#define motor_In2_PIN 22
+#define motor_PWM_PIN 21
 
 // Motor PWM Frequency
 // To calculate you need R and L of the motor.
@@ -58,9 +64,10 @@
 
 // NOTE: the "LL" at the end of the constant is "LongLong" type
 const uint64_t pipe = 0xE8E8F0F0E1LL; // Define the transmit pipe
+byte addresses[][6] = {"1Node","2Node"};
 
-// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
-RF24 radio(CE_PIN, CSN_PIN_Radio);
+// Set up nRF24L01 radio on SPI bus plus pins 8 & 10
+RF24 radio(CE_Radio_PIN, CSN_Radio_PIN);
 
 // Set up BNO055 sensor
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
@@ -72,23 +79,23 @@ File logfile;
 
 // Structure of our message
 struct message_t {
-  float millis;
-  float speed;
-  float direction;
-  float voltage;
+  uint32_t millis;
+  int speed;
+  int direction;
+  int voltage;
 };
 
 message_t message;
 
 unsigned int speedCounter = 0;
 
-void error(char *str)
+void error(const char *str)
 {
   Serial.print("error: ");
   Serial.println(str);
   
   // red LED indicates error
-  digitalWrite(redLEDpin, HIGH);
+  digitalWrite(red_LED_PIN, HIGH);
   
   while(1);
 }
@@ -97,9 +104,9 @@ void error(char *str)
 // Motor on full speed:
 void motor_on()
 {
-  digitalWrite(motorIn1Pin, HIGH);
-  digitalWrite(motorIn2Pin, LOW);
-  digitalWrite(motorPwmPin, HIGH);
+  digitalWrite(motor_In1_PIN, HIGH);
+  digitalWrite(motor_In2_PIN, LOW);
+  digitalWrite(motor_PWM_PIN, HIGH);
 }
 
 //------------------------------------------------------------------------
@@ -108,47 +115,54 @@ void motor_on()
 //   int dutycycle  -- PWM setting (0..255)
 void motor_on_pwm(int dutycycle)
 {
-  analogWrite(motorIn1Pin, dutycycle);
-  digitalWrite(motorIn2Pin, LOW);
-  digitalWrite(motorPwmPin, HIGH);
+  analogWrite(motor_In1_PIN, dutycycle);
+  digitalWrite(motor_In2_PIN, LOW);
+  digitalWrite(motor_PWM_PIN, HIGH);
 }
 
 //------------------------------------------------------------------------
 // Motor off, coasting:
 void motor_off_coast()
 {
-  digitalWrite(motorIn1Pin, LOW);
-  digitalWrite(motorIn2Pin, LOW);
-  digitalWrite(motorPwmPin, HIGH);
+  digitalWrite(motor_In1_PIN, LOW);
+  digitalWrite(motor_In2_PIN, LOW);
+  digitalWrite(motor_PWM_PIN, HIGH);
 }
 
 //------------------------------------------------------------------------
 // Motor off, hard brake:
 void motor_off_brake()
 {
-  digitalWrite(motorIn1Pin, HIGH);
-  digitalWrite(motorIn2Pin, LOW);
-  digitalWrite(motorPwmPin, LOW);
+  digitalWrite(motor_In1_PIN, HIGH);
+  digitalWrite(motor_In2_PIN, LOW);
+  digitalWrite(motor_PWM_PIN, LOW);
 }
 
-
+//============================================================================
+//============================================================================
 void setup(void)
 {
-  pinMode(redLEDpin, OUTPUT);
-  pinMode(greenLEDpin, OUTPUT);
-  pinMode(speedPin, INPUT);
+  pinMode(red_LED_PIN, OUTPUT);
+  pinMode(green_LED_PIN, OUTPUT);
+  pinMode(speed_PIN, INPUT);
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
-  pinMode(CSN_PIN_CF, OUTPUT);
+  pinMode(CSN_CF_PIN, OUTPUT);
 
-  pinMode(motorIn1Pin, OUTPUT);
-  pinMode(motorIn2Pin, OUTPUT);
-  pinMode(motorPwmPin, OUTPUT); 
+  pinMode(CE_Radio_PIN, OUTPUT);
   
-
+  pinMode(motor_In1_PIN, OUTPUT);
+  pinMode(motor_In2_PIN, OUTPUT);
+  pinMode(motor_PWM_PIN, OUTPUT); 
+  
+  // The default SCK pin is connected to the LED which we use for something else
+  // Required for Radio/NRF24L01+ and SD-card
+  SPI.setSCK(SCK_PIN);
   
   // initialize the serial communication:
   Serial.begin(115200);
+  printf_begin(); // debugging for NRF24L01
+  delay(1000); // otherwise first lines may be missing
   Serial.println();
   
 
@@ -162,7 +176,7 @@ void setup(void)
   Serial.print("Initializing SD card...");
 
   // see if the card is present and can be initialized:
-  if (!SD.begin(CSN_PIN_CF)) {
+  if (!SD.begin(CSN_CF_PIN)) {
     Serial.println("Card failed, or not present");
     // don't do anything more:
     return;
@@ -191,14 +205,27 @@ void setup(void)
 
 #if RADIO_ON
   // Initialize all radio related modules
+  Serial.println("Initializing radio...");
   radio.begin();
-  radio.openWritingPipe(pipe);
+  radio.printDetails();
+  radio.setPALevel(RF24_PA_LOW);
+  radio.enableDynamicAck();
+ // radio.setPayloadSize(sizeof(message_t));
+ // radio.setAddressWidth(5);
+
+  //radio.openWritingPipe(pipe);
+  radio.openReadingPipe(1, addresses[1]);
+  radio.openWritingPipe(addresses[0]);
+  Serial.print("  is + variant: ");
+  Serial.println(radio.isPVariant());
+  radio.printDetails();
+  Serial.println("Radio initialized");
 #endif //RADIO_ON
 
   // Set PWM frequency.  The motor diver can handle 100 kHz max.
   // Setting the frequency on one pin changes it for all other
   // pins on this timer as well (5, 6, 9, 10, 20, 21, 22, 23)
-  analogWriteFrequency(motorIn1Pin, PWM_FREQUENCY);
+  analogWriteFrequency(motor_In1_PIN, PWM_FREQUENCY);
   
   if (!bno.begin())
   {
@@ -224,7 +251,7 @@ void setup(void)
 //  }
   
 
-//  digitalWrite(speedPin, HIGH);
+//  digitalWrite(speed_PIN, HIGH);
   attachInterrupt(0, countSpeed, CHANGE); 
    // If you want to set the aref to something other than 5v
   //analogReference(EXTERNAL);
@@ -240,7 +267,7 @@ void loop(void)
   uint32_t delayTime = (LOG_INTERVAL -1) - (millis() % LOG_INTERVAL);
   delay(delayTime);
   
-  digitalWrite(greenLEDpin, HIGH);
+  digitalWrite(green_LED_PIN, HIGH);
 
   // log milliseconds since starting
   uint32_t m = millis();
@@ -451,14 +478,14 @@ void loop(void)
   Serial.print(quat.z());
 #endif //ECHO_TO_SERIAL
 
-//  int speedReading = analogRead(speedPin); 
+  noInterrupts();
   int speedReading = speedCounter;  //calculate speed based on speedCounter
   speedCounter = 0;                 //reset speedCounter 
+  interrupts();
 //  delay(10);
-//  int dirReading = analogRead(dirPin); 
   int dirReading = int(event.orientation.x);
 //  delay(10);
-  int voltReading = analogRead(voltPin);    
+  int voltReading = analogRead(volt_PIN);    
   
 #if SD_CARD_ON
   logfile.print(", ");    
@@ -483,9 +510,13 @@ void loop(void)
 
 #if RADIO_ON
   // Construct the message we'll send
-  message = (message_t){ m, speedReading, dirReading, voltReading };
-  radio.write( &message, sizeof(message) );
+  message = (message_t){m, speedReading, dirReading, voltReading};
+  radio.stopListening();
+  Serial.println("Transmitting on radio");
+  radio.write(&message, sizeof(message_t), true);
+  Serial.println("...transmission finished");
+  radio.startListening();
 #endif //RADIO_ON
 
-  digitalWrite(greenLEDpin, LOW);
+  digitalWrite(green_LED_PIN, LOW);
 } 
