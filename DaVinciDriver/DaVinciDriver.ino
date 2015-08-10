@@ -12,12 +12,10 @@
  
  */
 
-#include <SPI.h>
 #include <SD.h>
 #include <IRremote.h>
-#include <nRF24L01.h>
 #include <RF24.h>
-#include <printf.h>  // debugging for NRF24L01
+#include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -28,9 +26,9 @@
 #define LOG_INTERVAL    55 //75 // mills between entries
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
-#define RADIO_ON         0 // Radio transmission
+#define RADIO_ON         1 // Radio transmission
 #define IR_ON            0 // IR transmission
-#define SD_CARD_ON       1 // Logging to SD card
+#define SD_CARD_ON       0 // Logging to SD card
 
 // the digital pins that connect to the LEDs
 #define red_LED_PIN 13
@@ -67,11 +65,10 @@
 
 //RTC_DS1307 RTC; // define the Real Time Clock object
 
-// NOTE: the "LL" at the end of the constant is "LongLong" type
-const uint64_t pipe = 0xE8E8F0F0E1LL; // Define the transmit pipe
-byte addresses[][6] = {"1Node","2Node"};
+// Radio pipe addresses for the 2 nodes to communicate.
+const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};
 
-// Set up nRF24L01 radio on SPI bus plus pins 8 & 10
+// Set up nRF24L01 radio on SPI bus
 RF24 radio(CE_Radio_PIN, CSN_Radio_PIN);
 
 // Define IR variables
@@ -298,7 +295,6 @@ void setup(void)
   
   // initialize the serial communication:
   Serial.begin(115200);
-  printf_begin(); // debugging for NRF24L01
   delay(1000); // otherwise first lines may be missing
   Serial.println();
   
@@ -344,19 +340,30 @@ void setup(void)
   // Initialize all radio related modules
   Serial.println("Initializing radio...");
   radio.begin();
-  radio.printDetails();
-  radio.setPALevel(RF24_PA_LOW);
-  radio.enableDynamicAck();
- // radio.setPayloadSize(sizeof(message_t));
- // radio.setAddressWidth(5);
 
-  //radio.openWritingPipe(pipe);
-  radio.openReadingPipe(1, addresses[1]);
-  radio.openWritingPipe(addresses[0]);
-  Serial.print("  is + variant: ");
-  Serial.println(radio.isPVariant());
-  radio.printDetails();
-  Serial.println("Radio initialized");
+  // optionally, increase the delay between retries & # of retries
+  radio.setRetries(15,15);
+
+  Serial.println(F("Setting up channel"));
+  // optionally, reduce the payload size.  seems to
+  // improve reliability
+  radio.setPayloadSize(sizeof(message_t));
+  radio.setChannel(0x4c);
+  radio.setPALevel(RF24_PA_MAX);
+
+  // Open pipes to other node for communication
+  // Open 'our' pipe for writing
+  // Open the 'other' pipe for reading, in position #1 (we can have up to 5 pipes open for reading)
+  radio.openWritingPipe(pipes[0]);
+  radio.openReadingPipe(1,pipes[1]);
+
+  // Start listening
+  radio.startListening();
+
+  // Dump the configuration of the rf unit for debugging
+  //
+  //radio.printDetails();
+  Serial.println(F("Radio ready."));
 #endif //RADIO_ON
 
 #if IR_ON  
@@ -661,11 +668,17 @@ void loop(void)
 #if RADIO_ON
   // Construct the message we'll send
   message = (message_t){m, speedReading, dirReading, voltReading};
+  
+  // We have to stop/start listening in order to receive ACK packets
   radio.stopListening();
-  Serial.println("Transmitting on radio");
-  radio.write(&message, sizeof(message_t), true);
-  Serial.println("...transmission finished");
+
+  //Serial.println(F("Transmitting on radio"));
+  bool ok = radio.write(&message, sizeof(message_t) );
+
+  //if (ok)  Serial.println(F("ok..."));
+  //else     Serial.println(F("failed.\n"));
   radio.startListening();
+
 #endif //RADIO_ON
 
   digitalWrite(green_LED_PIN, LOW);
