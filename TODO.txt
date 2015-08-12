@@ -1,0 +1,54 @@
+Open issues:
+- the Pololu footprint needs to be wider (500 mil wide, currently it's
+ 300 mil)
+- the BNO footprint is also wider in reality.  Maybe we can leave
+ out the "left" pin row, but I'm not sure if that is mechanically
+ stable enough.  However, we could fix it mechanically if needed.
+- the pads for the car speed sensor (what I call encoder) are too
+ close on the PCB
+- some of the Teensy pins on the underside ("in the middle") are used
+ on the PCB.  However, we cannot connect them easily/reliably.
+- the Teensy USB port will collide with the 7805 unless we really
+ mount the 7805 horizontally as indicated in the PCB editor.
+ But then it sticks out quite a bit.
+- I didn't understand the pololu STBY pin, for now I just added a pin/hole (JP10)
+ ====> connect to 3.3V to enable the driver all the time
+- we can change R2 and R4 from 3k to 3.3k, it's easier to buy and a
+ safe change as it lowers the voltage on the ADC
+- all free pins should maybe be made available
+ =====> with space problems we can still solder to the pads on the
+        PCB as I do now on the Lochrasterplatine
+- connect resistors to i2c bus of bno055?
+ =====> I have that on my board, doesn't harm :-)
+- connect goldcap to 7805?
+ =====> definitely, otherwise the Teensy might reset while driving
+- the diodes at the Teensy (to select between USB and regulator
+ voltage) need to be added
+- the SPI and I2C connections need to be added to the schematic,
+ and the connections from Pololu to Teensy as well
+- I would be happier with the 100 nF left of the 7805 and a few 
+ uF (10 uF for example) right of the 7805
+- we should change all pads to the same style and size (ok, bigger ones
+ for the jumpers because the drill hole is also larger).  Pads
+ should not be too small (the ones on the resistors are too small)
+ because they are harder to manufacture and to solder.  Since we buy
+ cheap PCBs I don't know their tolerances, so better use bigger pads.
+ I have to find good inner/outer diameters.
+- The power on the Schmitt trigger is labelled "-5V" and on the BNO
+  it's labelled "-3.3V".  They should be changed to +5V and +3.3V.
+
+DONE:
+- not decided yet where to connect R4 (engine voltage)
+ ====> to pin 3 of the Pololu
+- all the V+ need to be connected, somehow he didn't do it by himself
+ ===> the V+ are all connected, V+ should be the 12V behind the diode.
+      It currently is before the diode (as I had it in my earlier
+      schematics, but V+ must be behind the diode, otherwise the 
+      Pololu and the ADC in the Teensy will get reverse voltage
+      when the track power is reversed polarity).
+      ===> move V+ behind the diode  
+- connect capacitor to nrf24 ?
+ =====> good idea, at least 100 nF ceramic
+- how to add power/gnd pins to 74hc14
+ ====> right-click on the HC14, choose "Invoke", then "PWRN".  Place
+       it onto the schematic and connect Vcc and GND.
