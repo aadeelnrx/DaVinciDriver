@@ -13001,6 +13001,7 @@ Based on the following sources:
 <part name="C2" library="resistor" deviceset="CPOL-EU" device="P128-50" value="1000 uF"/>
 <part name="C3" library="resistor" deviceset="C-EU" device="025-025X050"/>
 <part name="C4" library="resistor" deviceset="C-EU" device="025-025X050"/>
+<part name="JP10" library="pinhead" deviceset="PINHD-1X1" device="" value="TEMP"/>
 </parts>
 <sheets>
 <sheet>
@@ -13063,6 +13064,7 @@ Based on the following sources:
 <instance part="C2" gate="G$1" x="38.1" y="134.62"/>
 <instance part="C3" gate="G$1" x="20.32" y="96.52"/>
 <instance part="C4" gate="G$1" x="190.5" y="93.98" rot="R90"/>
+<instance part="JP10" gate="G$1" x="81.28" y="71.12" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -13326,10 +13328,12 @@ Based on the following sources:
 <wire x1="93.98" y1="121.92" x2="86.36" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$24" class="0">
+<net name="JP0" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="17/A3/T"/>
-<wire x1="93.98" y1="96.52" x2="86.36" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="96.52" x2="81.28" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="JP10" gate="G$1" pin="1"/>
+<wire x1="81.28" y1="68.58" x2="81.28" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="STBY" class="0">
