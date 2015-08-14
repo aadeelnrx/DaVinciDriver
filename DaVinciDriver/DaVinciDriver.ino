@@ -272,6 +272,12 @@ void motor_off_brake()
   digitalWrite(motor_PWM_PIN, LOW);
 }
 
+//------------------------------------------------------------------------
+// Interrupt service routine for the wheel encoder:
+void countSpeed(){
+  speedCounter++;
+}
+
 //============================================================================
 //============================================================================
 void setup(void)
@@ -399,16 +405,18 @@ void setup(void)
 //  }
   
 
-//  digitalWrite(speed_PIN, HIGH);
+#if defined(CORE_TEENSY)
+  attachInterrupt(speed_PIN, countSpeed, CHANGE); 
+#else    // Arduino
+  //  digitalWrite(speed_PIN, HIGH);
   attachInterrupt(0, countSpeed, CHANGE); 
-   // If you want to set the aref to something other than 5v
+  // If you want to set the aref to something other than 5v
   //analogReference(EXTERNAL);
+#endif
 }
 
-void countSpeed(){
-  speedCounter++;
-}
-
+//====================================================================
+//====================================================================
 void loop(void)
 {
   // delay for the amount of time we want between readings
@@ -673,8 +681,8 @@ void loop(void)
   radio.stopListening();
 
   //Serial.println(F("Transmitting on radio"));
-  bool ok = radio.write(&message, sizeof(message_t) );
-
+  radio.write(&message, sizeof(message_t) );
+  //bool ok = radio.write(&message, sizeof(message_t) );
   //if (ok)  Serial.println(F("ok..."));
   //else     Serial.println(F("failed.\n"));
   radio.startListening();
@@ -683,3 +691,4 @@ void loop(void)
 
   digitalWrite(green_LED_PIN, LOW);
 } 
+
