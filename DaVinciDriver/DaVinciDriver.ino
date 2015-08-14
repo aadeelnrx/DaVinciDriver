@@ -36,7 +36,9 @@
 
 // The pins that connect to the sensors
 #define speed_PIN 3              // digital 3, interrupt 0
-#define volt_PIN A1              // analog 1
+#define track_volt_PIN A1        // analog 1
+#define engine_volt_PIN A2       // analog 2
+#define temperature_PIN A3       // analog 3 
 
 // The SPI pins for CF and Radio
 #define CE_Radio_PIN   8
@@ -51,6 +53,7 @@
 #define motor_In1_PIN 23
 #define motor_In2_PIN 22
 #define motor_PWM_PIN 21
+#define motor_stby_PIN 20
 
 // Motor PWM Frequency
 // To calculate you need R and L of the motor.
@@ -393,10 +396,10 @@ void setup(void)
   bno.setExtCrystalUse(true);  
 
 #if SD_CARD_ON
-  logfile.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn");    
+  logfile.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine,Temperatur");    
 #endif
 #if ECHO_TO_SERIAL
-  Serial.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn");
+  Serial.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine,Temperatur");
 #endif //ECHO_TO_SERIAL 
 
   //attempt to write out the header to the file
@@ -650,7 +653,9 @@ void loop(void)
 //  delay(10);
   int dirReading = int(event.orientation.x);
 //  delay(10);
-  int voltReading = analogRead(volt_PIN);    
+  int trackVoltReading = analogRead(track_volt_PIN);    
+  int engineVoltReading = analogRead(engine_volt_PIN);    
+  int temperatureReading = analogRead(temperature_PIN);    
   
 #if SD_CARD_ON
   logfile.print(", ");    
@@ -658,7 +663,11 @@ void loop(void)
   logfile.print(", ");    
   logfile.print(dirReading);
   logfile.print(", ");    
-  logfile.println(voltReading);
+  logfile.print(trackVoltReading);
+  logfile.print(", ");    
+  logfile.print(engineVoltReading);
+  logfile.print(", ");    
+  logfile.println(temperatureReading);
 #endif
 #if ECHO_TO_SERIAL
   Serial.print(", ");   
@@ -666,7 +675,11 @@ void loop(void)
   Serial.print(", ");    
   Serial.print(dirReading);
   Serial.print(", ");    
-  Serial.println(voltReading);
+  Serial.print(trackVoltReading);
+  Serial.print(", ");    
+  Serial.print(engineVoltReading);
+  Serial.print(", ");    
+  Serial.println(temperatureReading);
 #endif //ECHO_TO_SERIAL
 
 #if SD_CARD_ON
@@ -675,7 +688,7 @@ void loop(void)
 
 #if RADIO_ON
   // Construct the message we'll send
-  message = (message_t){m, speedReading, dirReading, voltReading};
+  message = (message_t){m, speedReading, dirReading, trackVoltReading};
   
   // We have to stop/start listening in order to receive ACK packets
   radio.stopListening();
