@@ -297,6 +297,7 @@ void setup(void)
   pinMode(motor_In1_PIN, OUTPUT);
   pinMode(motor_In2_PIN, OUTPUT);
   pinMode(motor_PWM_PIN, OUTPUT); 
+  pinMode(motor_stby_PIN, OUTPUT); 
   
   // The default SCK pin is connected to the LED which we use for something else
   // Required for Radio/NRF24L01+ and SD-card
