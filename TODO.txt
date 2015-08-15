@@ -1,13 +1,4 @@
 Open issues:
-- the Pololu footprint needs to be wider (500 mil wide, currently it's
- 300 mil)
-- the Teensy USB port will collide with the 7805 unless we really
- mount the 7805 horizontally as indicated in the PCB editor.
- But then it sticks out quite a bit.
-- the pads for the car speed sensor (what I call encoder) are too
- close on the PCB
-- some of the Teensy pins on the underside ("in the middle") are used
- on the PCB.  However, we cannot connect them easily/reliably.
 - connect resistors to i2c bus of bno055?
  =====> I have that on my board, doesn't harm :-)
 - we should change all pads to the same style and size (ok, bigger ones
@@ -66,3 +57,16 @@ DONE:
 - all free pins should maybe be made available
  =====> with space problems we can still solder to the pads on the
         PCB as I do now on the Lochrasterplatine
+- the Pololu footprint needs to be wider (500 mil wide, currently it's
+ 300 mil)
+  => DONE
+- the Teensy USB port will collide with the 7805 unless we really
+ mount the 7805 horizontally as indicated in the PCB editor.
+ But then it sticks out quite a bit.
+  => DONE
+- the pads for the car speed sensor (what I call encoder) are too
+ close on the PCB
+  => DONE
+- some of the Teensy pins on the underside ("in the middle") are used
+ on the PCB.  However, we cannot connect them easily/reliably.
+  => DONE
