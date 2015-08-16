@@ -64,7 +64,7 @@
 // Tmin = 100/dc * 5 * Tc
 // PWM_FREQUENCY = 1/Tmin
 #define PWM_FREQUENCY  400 // in Hz (guess, I haven't measured R and L)
-
+uint32_t starttime;
 
 //RTC_DS1307 RTC; // define the Real Time Clock object
 
@@ -417,12 +417,44 @@ void setup(void)
   // If you want to set the aref to something other than 5v
   //analogReference(EXTERNAL);
 #endif
+
+  // Blink to indicate it's going to start:
+  for (int i=0; i < 4; i++)
+  {
+    digitalWrite(green_LED_PIN, HIGH);
+    delay(500);
+    digitalWrite(green_LED_PIN, LOW);
+    delay(500);
+  }
+  // last second: fast blinking
+  for (int i=0; i < 10; i++)
+  {
+    digitalWrite(green_LED_PIN, HIGH);
+    delay(50);
+    digitalWrite(green_LED_PIN, LOW);
+    delay(50);
+  }
+  
+  // Motor on:
+  starttime = millis();
+  motor_on_pwm(80);
 }
 
 //====================================================================
 //====================================================================
 void loop(void)
 {
+  
+  if ((millis() - starttime) > 1000L)
+  {
+    motor_on_pwm(70);
+  }
+  if ((millis() - starttime) > 60000L)
+  {
+    motor_off_brake();
+    while(1);
+  }
+  
   // delay for the amount of time we want between readings
   uint32_t delayTime = (LOG_INTERVAL -1) - (millis() % LOG_INTERVAL);
   delay(delayTime);
