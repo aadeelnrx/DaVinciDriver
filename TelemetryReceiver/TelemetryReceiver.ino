@@ -1,5 +1,7 @@
 /*
  Receiver for Telemetry data sent by the DaVinciDriver via radio
+ Prints the received data on the serial port.
+ Every time a message is received, the LED on the Teensy flashes.
  
  https://github.com/eedala/DaVinciDriver
 
@@ -41,17 +43,20 @@ const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};
 void setup()
 {
   pinMode(red_LED_PIN, OUTPUT);
+  digitalWrite(red_LED_PIN, HIGH);  // indicate Power On
 
   Serial.begin(115200);
-  delay(1000);   // Serial over USB needs some time to start
-  Serial.println(F("Telemetry Receiver"));
+  delay(2000);   // Serial over USB needs some time to start
+  digitalWrite(red_LED_PIN, LOW);
+
+  Serial.println(F("Telemetry Receiver R1.0"));
   
   // Setup and configure rf radio
   SPI.setSCK(SCK_PIN); // we use an alternate pin for SCK
   radio.begin();
 
   // optionally, increase the delay between retries & # of retries
-  radio.setRetries(15,15);
+  radio.setRetries(15, 15);
 
   Serial.println(F("Setting up channel"));
   // optionally, reduce the payload size.  seems to
@@ -65,24 +70,23 @@ void setup()
   // Open the 'other' pipe for reading, in position #1 (we can have up to 5 pipes open for reading)
   Serial.println(F("Setting up pipes"));
   radio.openWritingPipe(pipes[1]);
-  radio.openReadingPipe(1,pipes[0]);
+  radio.openReadingPipe(1, pipes[0]);
 
   // Start listening
   Serial.println(F("Start listening"));
   radio.startListening();
 
   // Dump the configuration of the rf unit for debugging
-  //
-  //radio.printDetails();
+  //radio.printDetails(); 
   Serial.println(F("Ready."));
+  Serial.println(F("millis, speed, direction, trackVoltage"));
 }
 
 
 //---------------------------------------------------------------------------
 void loop()
 {
-  // if there is data ready
-  //printf("Check available...\n");
+  // Check if there is data ready
   if (radio.available())
   {
     digitalWrite(red_LED_PIN, HIGH);  // indicate reception of a message
@@ -94,11 +98,10 @@ void loop()
     while (!done)
     {
       // Fetch the payload, and see if this was the last one.
-      done = radio.read( &data, sizeof(message_t) );
+      done = radio.read(&data, sizeof(message_t));
       
-      // Spew it
-      Serial.println(F("Got payload:"));
-      Serial.println(F("millis, speed, direction, voltage"));
+      // Print it
+      //Serial.println(F("Got payload:"));
       Serial.print(data.millis);
       Serial.print(F(", "));
       Serial.print(data.speed);
