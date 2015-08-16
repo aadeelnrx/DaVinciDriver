@@ -38,7 +38,6 @@
 #define speed_PIN 3              // digital 3, interrupt 0
 #define track_volt_PIN A1        // analog 1
 #define engine_volt_PIN A2       // analog 2
-#define temperature_PIN A3       // analog 3 
 
 // The SPI pins for CF and Radio
 #define CE_Radio_PIN   8
@@ -397,10 +396,10 @@ void setup(void)
   bno.setExtCrystalUse(true);  
 
 #if SD_CARD_ON
-  logfile.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine,Temperatur");    
+  logfile.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");    
 #endif
 #if ECHO_TO_SERIAL
-  Serial.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine,Temperatur");
+  Serial.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");
 #endif //ECHO_TO_SERIAL 
 
   //attempt to write out the header to the file
@@ -656,7 +655,6 @@ void loop(void)
 //  delay(10);
   int trackVoltReading = analogRead(track_volt_PIN);    
   int engineVoltReading = analogRead(engine_volt_PIN);    
-  int temperatureReading = analogRead(temperature_PIN);    
   
 #if SD_CARD_ON
   logfile.print(", ");    
@@ -667,8 +665,6 @@ void loop(void)
   logfile.print(trackVoltReading);
   logfile.print(", ");    
   logfile.print(engineVoltReading);
-  logfile.print(", ");    
-  logfile.println(temperatureReading);
 #endif
 #if ECHO_TO_SERIAL
   Serial.print(", ");   
@@ -679,8 +675,6 @@ void loop(void)
   Serial.print(trackVoltReading);
   Serial.print(", ");    
   Serial.print(engineVoltReading);
-  Serial.print(", ");    
-  Serial.println(temperatureReading);
 #endif //ECHO_TO_SERIAL
 
 #if SD_CARD_ON
