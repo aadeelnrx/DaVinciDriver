@@ -14,6 +14,7 @@
 
 #include <SD.h>
 #include <IRremote.h>
+#include <PID_v1.h>
 #include <RF24.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -23,7 +24,7 @@
 /*-----( Declare Constants and Pin Numbers )-----*/
 
 // A simple data logger for the Arduino analog pins
-#define LOG_INTERVAL    55 //75 // mills between entries
+#define LOG_INTERVAL    100 //75 // mills between entries
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
 #define RADIO_ON         1 // Radio transmission
@@ -65,6 +66,10 @@
 // PWM_FREQUENCY = 1/Tmin
 #define PWM_FREQUENCY  400 // in Hz (guess, I haven't measured R and L)
 uint32_t starttime;
+
+// PID Controller
+double PID_setpoint, PID_input, PID_output;
+PID PIDcontroller(&PID_input, &PID_output, &PID_setpoint, 1.5, 5, 0, DIRECT);
 
 //RTC_DS1307 RTC; // define the Real Time Clock object
 
@@ -436,8 +441,14 @@ void setup(void)
   }
   
   // Motor on:
-  starttime = millis();
-  motor_on_pwm(80);
+  //starttime = millis();
+  //motor_on_pwm(80);
+  
+  // PID
+  PID_input = 0.0;
+  PID_setpoint = 80;
+  PIDcontroller.SetMode(AUTOMATIC);
+  
 }
 
 //====================================================================
@@ -445,10 +456,11 @@ void setup(void)
 void loop(void)
 {
   
-  if ((millis() - starttime) > 1000L)
-  {
-    motor_on_pwm(70);
-  }
+//  if ((millis() - starttime) > 1000L)
+//  {
+//    motor_on_pwm(70);
+//  }
+
   if ((millis() - starttime) > 60000L)
   {
     motor_off_brake();
@@ -683,6 +695,11 @@ void loop(void)
   int speedReading = speedCounter;  //calculate speed based on speedCounter
   speedCounter = 0;                 //reset speedCounter 
   interrupts();
+
+  PID_input = (float)speedReading;
+  PIDcontroller.Compute();
+  motor_on_pwm(PID_output);
+  
 //  delay(10);
   int dirReading = int(event.orientation.x);
 //  delay(10);
