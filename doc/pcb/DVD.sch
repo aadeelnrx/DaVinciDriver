@@ -12618,9 +12618,9 @@ Based on the following sources:
 </deviceset>
 </devicesets>
 </library>
-<library name="ic-package_mod">
-<description>&lt;b&gt;IC Packages an Sockets&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<library name="DVD">
+<description>&lt;b&gt;DVD Parts an Sockets&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by eedlez&lt;/author&gt;</description>
 <packages>
 <package name="DIL16WIDE">
 <wire x1="11.43" y1="5.461" x2="-8.89" y2="5.461" width="0.1524" layer="21"/>
@@ -12670,77 +12670,75 @@ Based on the following sources:
 </package>
 </packages>
 <symbols>
-<symbol name="DIL16W">
+<symbol name="POLOLU_TB6612FNG">
 <wire x1="-5.08" y1="8.89" x2="-5.08" y2="-11.43" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="-11.43" x2="5.08" y2="-11.43" width="0.254" layer="94"/>
 <wire x1="5.08" y1="-11.43" x2="5.08" y2="8.89" width="0.254" layer="94"/>
 <wire x1="5.08" y1="8.89" x2="2.54" y2="8.89" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="8.89" x2="-2.54" y2="8.89" width="0.254" layer="94"/>
 <wire x1="-2.54" y1="8.89" x2="2.54" y2="8.89" width="0.254" layer="94" curve="180"/>
-<text x="-4.445" y="9.525" size="1.778" layer="95">&gt;NAME</text>
-<text x="-4.445" y="-13.97" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="1" x="-7.62" y="7.62" visible="pad" length="short" direction="pas"/>
-<pin name="2" x="-7.62" y="5.08" visible="pad" length="short" direction="pas"/>
-<pin name="3" x="-7.62" y="2.54" visible="pad" length="short" direction="pas"/>
-<pin name="4" x="-7.62" y="0" visible="pad" length="short" direction="pas"/>
-<pin name="5" x="-7.62" y="-2.54" visible="pad" length="short" direction="pas"/>
-<pin name="6" x="-7.62" y="-5.08" visible="pad" length="short" direction="pas"/>
-<pin name="7" x="-7.62" y="-7.62" visible="pad" length="short" direction="pas"/>
-<pin name="8" x="-7.62" y="-10.16" visible="pad" length="short" direction="pas"/>
-<pin name="9" x="7.62" y="-10.16" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="10" x="7.62" y="-7.62" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="11" x="7.62" y="-5.08" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="12" x="7.62" y="-2.54" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="13" x="7.62" y="0" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="14" x="7.62" y="2.54" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="15" x="7.62" y="5.08" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="16" x="7.62" y="7.62" visible="pad" length="short" direction="pas" rot="R180"/>
+<text x="-11.557" y="9.525" size="1.778" layer="95">POLOLU_TB6612FNG</text>
+<pin name="1/GND" x="-7.62" y="7.62" length="short" direction="pwr"/>
+<pin name="2/VCC" x="-7.62" y="5.08" length="short" direction="pwr"/>
+<pin name="3/AO1" x="-7.62" y="2.54" length="short"/>
+<pin name="4/AO2" x="-7.62" y="0" length="short"/>
+<pin name="5/BO2" x="-7.62" y="-2.54" length="short"/>
+<pin name="6/BO1" x="-7.62" y="-5.08" length="short"/>
+<pin name="7/VMOT" x="-7.62" y="-7.62" length="short" direction="pwr"/>
+<pin name="8/GND" x="-7.62" y="-10.16" length="short" direction="pwr"/>
+<pin name="9/GND" x="7.62" y="-10.16" length="short" direction="pwr" rot="R180"/>
+<pin name="10/PWMB" x="7.62" y="-7.62" length="short" direction="in" rot="R180"/>
+<pin name="11/BIN2" x="7.62" y="-5.08" length="short" rot="R180"/>
+<pin name="12/BIN1" x="7.62" y="-2.54" length="short" rot="R180"/>
+<pin name="13/!STBY" x="7.62" y="0" length="short" direction="in" rot="R180"/>
+<pin name="14/AIN1" x="7.62" y="2.54" length="short" rot="R180"/>
+<pin name="15/AIN2" x="7.62" y="5.08" length="short" rot="R180"/>
+<pin name="16/PWMA" x="7.62" y="7.62" length="short" direction="in" rot="R180"/>
 </symbol>
-<symbol name="DIL10-6-4">
+<symbol name="BNO055">
 <wire x1="-5.08" y1="6.35" x2="-5.08" y2="-8.89" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="-8.89" x2="5.08" y2="-8.89" width="0.254" layer="94"/>
 <wire x1="5.08" y1="-8.89" x2="5.08" y2="6.35" width="0.254" layer="94"/>
 <wire x1="5.08" y1="6.35" x2="2.54" y2="6.35" width="0.254" layer="94"/>
 <wire x1="-5.08" y1="6.35" x2="-2.54" y2="6.35" width="0.254" layer="94"/>
 <wire x1="-2.54" y1="6.35" x2="2.54" y2="6.35" width="0.254" layer="94" curve="180"/>
-<text x="-4.445" y="6.985" size="1.778" layer="95">&gt;NAME</text>
-<text x="-4.445" y="-11.43" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="10" x="-7.62" y="2.54" visible="pad" length="short" direction="pas"/>
-<pin name="9" x="-7.62" y="0" visible="pad" length="short" direction="pas"/>
-<pin name="8" x="-7.62" y="-2.54" visible="pad" length="short" direction="pas"/>
-<pin name="7" x="-7.62" y="-5.08" visible="pad" length="short" direction="pas"/>
-<pin name="6" x="7.62" y="-7.62" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="5" x="7.62" y="-5.08" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="4" x="7.62" y="-2.54" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="3" x="7.62" y="0" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="2" x="7.62" y="2.54" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="1" x="7.62" y="5.08" visible="pad" length="short" direction="pas" rot="R180"/>
+<text x="-4.445" y="6.985" size="1.778" layer="95">BNO055</text>
+<pin name="10/PS0" x="-7.62" y="2.54" length="short"/>
+<pin name="9/PS1" x="-7.62" y="0" length="short"/>
+<pin name="8/INT" x="-7.62" y="-2.54" length="short"/>
+<pin name="7/ADR" x="-7.62" y="-5.08" length="short"/>
+<pin name="6/RST" x="7.62" y="-7.62" length="short" direction="in" rot="R180"/>
+<pin name="5/SCL" x="7.62" y="-5.08" length="short" rot="R180"/>
+<pin name="4/SDA" x="7.62" y="-2.54" length="short" rot="R180"/>
+<pin name="3/GND" x="7.62" y="0" length="short" direction="pwr" rot="R180"/>
+<pin name="2/3V3OUT" x="7.62" y="2.54" length="short" direction="pwr" rot="R180"/>
+<pin name="1/VCC" x="7.62" y="5.08" length="short" direction="pwr" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="DIL16W">
+<deviceset name="POLOLU_TB6612FNG">
 <gates>
-<gate name="G$1" symbol="DIL16W" x="12.7" y="-12.7"/>
+<gate name="G$1" symbol="POLOLU_TB6612FNG" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="DIL16WIDE">
 <connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="10" pad="10"/>
-<connect gate="G$1" pin="11" pad="11"/>
-<connect gate="G$1" pin="12" pad="12"/>
-<connect gate="G$1" pin="13" pad="13"/>
-<connect gate="G$1" pin="14" pad="14"/>
-<connect gate="G$1" pin="15" pad="15"/>
-<connect gate="G$1" pin="16" pad="16"/>
-<connect gate="G$1" pin="2" pad="2"/>
-<connect gate="G$1" pin="3" pad="3"/>
-<connect gate="G$1" pin="4" pad="4"/>
-<connect gate="G$1" pin="5" pad="5"/>
-<connect gate="G$1" pin="6" pad="6"/>
-<connect gate="G$1" pin="7" pad="7"/>
-<connect gate="G$1" pin="8" pad="8"/>
-<connect gate="G$1" pin="9" pad="9"/>
+<connect gate="G$1" pin="1/GND" pad="1"/>
+<connect gate="G$1" pin="10/PWMB" pad="10"/>
+<connect gate="G$1" pin="11/BIN2" pad="11"/>
+<connect gate="G$1" pin="12/BIN1" pad="12"/>
+<connect gate="G$1" pin="13/!STBY" pad="13"/>
+<connect gate="G$1" pin="14/AIN1" pad="14"/>
+<connect gate="G$1" pin="15/AIN2" pad="15"/>
+<connect gate="G$1" pin="16/PWMA" pad="16"/>
+<connect gate="G$1" pin="2/VCC" pad="2"/>
+<connect gate="G$1" pin="3/AO1" pad="3"/>
+<connect gate="G$1" pin="4/AO2" pad="4"/>
+<connect gate="G$1" pin="5/BO2" pad="5"/>
+<connect gate="G$1" pin="6/BO1" pad="6"/>
+<connect gate="G$1" pin="7/VMOT" pad="7"/>
+<connect gate="G$1" pin="8/GND" pad="8"/>
+<connect gate="G$1" pin="9/GND" pad="9"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -12748,23 +12746,23 @@ Based on the following sources:
 </device>
 </devices>
 </deviceset>
-<deviceset name="DIL10-6-4" uservalue="yes">
+<deviceset name="BNO055">
 <gates>
-<gate name="G$1" symbol="DIL10-6-4" x="0" y="0"/>
+<gate name="G$1" symbol="BNO055" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="DIL10-6-4">
 <connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="10" pad="10"/>
-<connect gate="G$1" pin="2" pad="2"/>
-<connect gate="G$1" pin="3" pad="3"/>
-<connect gate="G$1" pin="4" pad="4"/>
-<connect gate="G$1" pin="5" pad="5"/>
-<connect gate="G$1" pin="6" pad="6"/>
-<connect gate="G$1" pin="7" pad="7"/>
-<connect gate="G$1" pin="8" pad="8"/>
-<connect gate="G$1" pin="9" pad="9"/>
+<connect gate="G$1" pin="1/VCC" pad="1"/>
+<connect gate="G$1" pin="10/PS0" pad="10"/>
+<connect gate="G$1" pin="2/3V3OUT" pad="2"/>
+<connect gate="G$1" pin="3/GND" pad="3"/>
+<connect gate="G$1" pin="4/SDA" pad="4"/>
+<connect gate="G$1" pin="5/SCL" pad="5"/>
+<connect gate="G$1" pin="6/RST" pad="6"/>
+<connect gate="G$1" pin="7/ADR" pad="7"/>
+<connect gate="G$1" pin="8/INT" pad="8"/>
+<connect gate="G$1" pin="9/PS1" pad="9"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -12837,9 +12835,9 @@ Based on the following sources:
 <part name="JP10" library="pinhead" deviceset="PINHD-1X1" device="" value="TEMP"/>
 <part name="D2" library="adafruit" deviceset="1N4004" device=""/>
 <part name="D3" library="adafruit" deviceset="1N4004" device=""/>
-<part name="POLULU_TB6612FNG" library="ic-package_mod" deviceset="DIL16W" device="" value="DIL16W"/>
-<part name="BNO055" library="ic-package_mod" deviceset="DIL10-6-4" device=""/>
 <part name="U$1" library="Teensy_3_Series_Board_v1.0" deviceset="TEENSY_3.1_BASIC_DVD" device=""/>
+<part name="U$2" library="DVD" deviceset="POLOLU_TB6612FNG" device=""/>
+<part name="U$4" library="DVD" deviceset="BNO055" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -12901,9 +12899,9 @@ Based on the following sources:
 <instance part="JP10" gate="G$1" x="81.28" y="71.12" rot="R90"/>
 <instance part="D2" gate="1" x="144.78" y="142.24"/>
 <instance part="D3" gate="1" x="157.48" y="139.7" rot="R180"/>
-<instance part="POLULU_TB6612FNG" gate="G$1" x="20.32" y="33.02"/>
-<instance part="BNO055" gate="G$1" x="187.96" y="137.16" rot="MR0"/>
 <instance part="U$1" gate="G$1" x="116.84" y="111.76"/>
+<instance part="U$2" gate="G$1" x="20.32" y="33.02"/>
+<instance part="U$4" gate="G$1" x="187.96" y="137.16" rot="MR0"/>
 </instances>
 <busses>
 </busses>
@@ -12917,7 +12915,7 @@ Based on the following sources:
 <segment>
 <wire x1="12.7" y1="25.4" x2="-5.08" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="P+11" gate="1" pin="V+"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="7"/>
+<pinref part="U$2" gate="G$1" pin="7/VMOT"/>
 </segment>
 <segment>
 <pinref part="D1" gate="1" pin="C"/>
@@ -13014,7 +13012,7 @@ Based on the following sources:
 <wire x1="180.34" y1="137.16" x2="175.26" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="175.26" y1="137.16" x2="175.26" y2="129.54" width="0.1524" layer="91"/>
 <pinref part="GND12" gate="1" pin="GND"/>
-<pinref part="BNO055" gate="G$1" pin="3"/>
+<pinref part="U$4" gate="G$1" pin="3/GND"/>
 </segment>
 <segment>
 <wire x1="12.7" y1="40.64" x2="10.16" y2="40.64" width="0.1524" layer="91"/>
@@ -13028,9 +13026,9 @@ Based on the following sources:
 <junction x="10.16" y="22.86"/>
 <junction x="10.16" y="17.78"/>
 <pinref part="GND11" gate="1" pin="GND"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="1"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="8"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="9"/>
+<pinref part="U$2" gate="G$1" pin="1/GND"/>
+<pinref part="U$2" gate="G$1" pin="8/GND"/>
+<pinref part="U$2" gate="G$1" pin="9/GND"/>
 </segment>
 </net>
 <net name="+5V" class="0">
@@ -13182,7 +13180,7 @@ Based on the following sources:
 </segment>
 <segment>
 <wire x1="27.94" y1="33.02" x2="40.64" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="13"/>
+<pinref part="U$2" gate="G$1" pin="13/!STBY"/>
 </segment>
 </net>
 <net name="+3V3" class="0">
@@ -13207,13 +13205,13 @@ Based on the following sources:
 <wire x1="180.34" y1="142.24" x2="177.8" y2="142.24" width="0.1524" layer="91"/>
 <wire x1="177.8" y1="142.24" x2="177.8" y2="144.78" width="0.1524" layer="91"/>
 <pinref part="+3V4" gate="G$1" pin="+3V3"/>
-<pinref part="BNO055" gate="G$1" pin="1"/>
+<pinref part="U$4" gate="G$1" pin="1/VCC"/>
 </segment>
 <segment>
 <wire x1="12.7" y1="38.1" x2="5.08" y2="38.1" width="0.1524" layer="91"/>
 <pinref part="+3V3" gate="G$1" pin="+3V3"/>
 <wire x1="5.08" y1="38.1" x2="5.08" y2="40.64" width="0.1524" layer="91"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="2"/>
+<pinref part="U$2" gate="G$1" pin="2/VCC"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -13320,7 +13318,7 @@ Based on the following sources:
 <net name="SDA" class="0">
 <segment>
 <wire x1="180.34" y1="134.62" x2="177.8" y2="134.62" width="0.1524" layer="91"/>
-<pinref part="BNO055" gate="G$1" pin="4"/>
+<pinref part="U$4" gate="G$1" pin="4/SDA"/>
 </segment>
 <segment>
 <wire x1="93.98" y1="93.98" x2="86.36" y2="93.98" width="0.1524" layer="91"/>
@@ -13330,7 +13328,7 @@ Based on the following sources:
 <net name="SCL" class="0">
 <segment>
 <wire x1="180.34" y1="132.08" x2="177.8" y2="132.08" width="0.1524" layer="91"/>
-<pinref part="BNO055" gate="G$1" pin="5"/>
+<pinref part="U$4" gate="G$1" pin="5/SCL"/>
 </segment>
 <segment>
 <wire x1="93.98" y1="91.44" x2="86.36" y2="91.44" width="0.1524" layer="91"/>
@@ -13353,8 +13351,8 @@ Based on the following sources:
 <wire x1="40.64" y1="50.8" x2="0" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="0" y1="50.8" x2="0" y2="35.56" width="0.1524" layer="91"/>
 <junction x="0" y="35.56"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="3"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="6"/>
+<pinref part="U$2" gate="G$1" pin="3/AO1"/>
+<pinref part="U$2" gate="G$1" pin="6/BO1"/>
 </segment>
 </net>
 <net name="ENGINE1" class="0">
@@ -13366,8 +13364,8 @@ Based on the following sources:
 <wire x1="5.08" y1="30.48" x2="-15.24" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="30.48" x2="-15.24" y2="35.56" width="0.1524" layer="91"/>
 <junction x="5.08" y="30.48"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="4"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="5"/>
+<pinref part="U$2" gate="G$1" pin="4/AO2"/>
+<pinref part="U$2" gate="G$1" pin="5/BO2"/>
 </segment>
 </net>
 <net name="IN1" class="0">
@@ -13377,8 +13375,8 @@ Based on the following sources:
 <wire x1="27.94" y1="30.48" x2="30.48" y2="30.48" width="0.1524" layer="91"/>
 <junction x="30.48" y="30.48"/>
 <wire x1="30.48" y1="30.48" x2="40.64" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="12"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="14"/>
+<pinref part="U$2" gate="G$1" pin="12/BIN1"/>
+<pinref part="U$2" gate="G$1" pin="14/AIN1"/>
 </segment>
 <segment>
 <wire x1="93.98" y1="81.28" x2="86.36" y2="81.28" width="0.1524" layer="91"/>
@@ -13392,8 +13390,8 @@ Based on the following sources:
 <wire x1="27.94" y1="27.94" x2="33.02" y2="27.94" width="0.1524" layer="91"/>
 <junction x="33.02" y="27.94"/>
 <wire x1="33.02" y1="27.94" x2="40.64" y2="27.94" width="0.1524" layer="91"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="11"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="15"/>
+<pinref part="U$2" gate="G$1" pin="11/BIN2"/>
+<pinref part="U$2" gate="G$1" pin="15/AIN2"/>
 </segment>
 <segment>
 <wire x1="93.98" y1="83.82" x2="86.36" y2="83.82" width="0.1524" layer="91"/>
@@ -13407,8 +13405,8 @@ Based on the following sources:
 <wire x1="27.94" y1="25.4" x2="35.56" y2="25.4" width="0.1524" layer="91"/>
 <junction x="35.56" y="25.4"/>
 <wire x1="35.56" y1="25.4" x2="40.64" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="10"/>
-<pinref part="POLULU_TB6612FNG" gate="G$1" pin="16"/>
+<pinref part="U$2" gate="G$1" pin="10/PWMB"/>
+<pinref part="U$2" gate="G$1" pin="16/PWMA"/>
 </segment>
 <segment>
 <wire x1="93.98" y1="86.36" x2="86.36" y2="86.36" width="0.1524" layer="91"/>
