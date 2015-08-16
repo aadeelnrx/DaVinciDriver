@@ -664,7 +664,7 @@ void loop(void)
   logfile.print(", ");    
   logfile.print(trackVoltReading);
   logfile.print(", ");    
-  logfile.print(engineVoltReading);
+  logfile.println(engineVoltReading);
 #endif
 #if ECHO_TO_SERIAL
   Serial.print(", ");   
@@ -674,7 +674,7 @@ void loop(void)
   Serial.print(", ");    
   Serial.print(trackVoltReading);
   Serial.print(", ");    
-  Serial.print(engineVoltReading);
+  Serial.println(engineVoltReading);
 #endif //ECHO_TO_SERIAL
 
 #if SD_CARD_ON
