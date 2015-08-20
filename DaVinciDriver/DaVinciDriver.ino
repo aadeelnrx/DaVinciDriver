@@ -64,6 +64,8 @@
 // Tmin = 100/dc * 5 * Tc
 // PWM_FREQUENCY = 1/Tmin
 #define PWM_FREQUENCY  400 // in Hz (guess, I haven't measured R and L)
+
+/*-------------------( Global Variables )-----------------------------------*/
 uint32_t starttime;
 
 // PID Controller
@@ -81,10 +83,10 @@ RF24 radio(CE_Radio_PIN, CSN_Radio_PIN);
 // Acceleration and orientation
 sensors_event_t accel_orient;
 
-// Define IR variables
+// Infrared remote control receiver
 #if IR_ON
-IRrecv irrecv(IR_receiver);           // create instance of 'irrecv'
-decode_results results;            // create instance of 'decode_results'
+IRrecv irrecv(IR_receiver);
+decode_results results;
 #endif
 
 // BNO055 sensor and the data we read from it:
@@ -99,7 +101,6 @@ imu::Quaternion quat;
 
 
 #if SD_CARD_ON
-// the logging file
 File logfile;
 #endif
 
@@ -115,13 +116,44 @@ message_t message;
 // Wheel encoder, updated by an interrupt routine
 volatile unsigned int speedCounter = 0;
 
+//---------------------------------------------------------------
+// Macros to log data to either serial and/or SD-card.
+// They are macros because then we don't have to define overloaded
+// functions for all possible datatypes.
+//    LOG_SERIAL(x)    and LOG_SDCARD(x)
+//    LOG_SERIAL_LN(x) and LOG_SDCARD_LN(X)   with newline
+//    LOG(x)   to both, comma-separation will be added
+//    LOG_LN(x)  to both
+#if ECHO_TO_SERIAL 
+#define LOG_SERIAL_LN(x) Serial.println(x);
+#define LOG_SERIAL(x) Serial.print(x);
+#else
+#define LOG_SERIAL_LN(x)
+#define LOG_SERIAL(x)
+#endif
+
+#if SD_CARD_ON 
+#define LOG_SDCARD_LN(x) logfile.println(x);
+#define LOG_SDCARD(x) logfile.print(x);
+#else
+#define LOG_SDCARD_LN(x)
+#define LOG_SDCARD(x)
+#endif
+
+#define LOG(x) LOG_SERIAL(x) LOG_SERIAL(", ") LOG_SDCARD(x) LOG_SDCARD(", ")
+#define LOG_LN(x) LOG_SERIAL_LN(x) LOG_SDCARD_LN(x)
+
+
 //----------------------------------------------------------------
 // Fatal error: print message to serial, red LED on, stop program.
-// TODO: should we also stop the motor?
+// Stop motor.
 void error(const char *str)
 {
+  // Better switch off motor:
+  motor_off_brake();
+
   Serial.print("error: ");
-  Serial.println(str);
+  LOG_SERIAL_LN(str);
   
   // red LED indicates error
   digitalWrite(red_LED_PIN, HIGH);
@@ -137,121 +169,75 @@ void translateIR() // takes action based on IR code received
   switch(results.value)
   {
   case 0xFFA25D: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" CH-"); 
-#endif  
+    LOG_SERIAL_LN(" CH-"); 
     break;
   case 0xFF629D: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" CH");   
-#endif  
+    LOG_SERIAL_LN(" CH");   
     break;
   case 0xFFE21D: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" CH+");  
-#endif  
+    LOG_SERIAL_LN(" CH+");  
     break;
   case 0xFF22DD: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" REVERSE");    
-#endif  
+    LOG_SERIAL_LN(" REVERSE");    
     break;
   case 0xFF02FD: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" FORWARD");    
-#endif  
+    LOG_SERIAL_LN(" FORWARD");    
     break;
   case 0xFFC23D: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" PLAY/PAUSE"); 
-#endif  
+    LOG_SERIAL_LN(" PLAY/PAUSE"); 
     break;
   case 0xFFE01F: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" -");    
-#endif  
+    LOG_SERIAL_LN(" -");    
     break;
   case 0xFFA857: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" +");    
-#endif  
+    LOG_SERIAL_LN(" +");    
     break;
   case 0xFF906F: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" EQ");   
-#endif  
+    LOG_SERIAL_LN(" EQ");   
     break;
   case 0xFF6897: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 0");    
-#endif  
+    LOG_SERIAL_LN(" 0");    
     break;
   case 0xFF9867: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 100+"); 
-#endif  
+    LOG_SERIAL_LN(" 100+"); 
     break;
   case 0xFFB04F: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 200+"); 
-#endif  
+    LOG_SERIAL_LN(" 200+");   
     break;
   case 0xFF30CF: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 1");    
-#endif  
+    LOG_SERIAL_LN(" 1");    
     break;
   case 0xFF18E7: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 2");    
-#endif  
+    LOG_SERIAL_LN(" 2");    
     break;
   case 0xFF7A85: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 3");    
-#endif  
+    LOG_SERIAL_LN(" 3");    
     break;
   case 0xFF10EF: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 4");    
-#endif  
+    LOG_SERIAL_LN(" 4");    
     break;
   case 0xFF38C7: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 5");    
-#endif  
+    LOG_SERIAL_LN(" 5");    
     break;
   case 0xFF5AA5: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 6");    
-#endif  
+    LOG_SERIAL_LN(" 6");    
     break;
   case 0xFF42BD: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 7");    
-#endif  
+    LOG_SERIAL_LN(" 7");    
     break;
   case 0xFF4AB5: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 8");    
-#endif  
+    LOG_SERIAL_LN(" 8");    
     break;
   case 0xFF52AD: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" 9");    
-#endif  
+    LOG_SERIAL_LN(" 9");    
     break;
   case 0xFFFFFFFF: 
-#if ECHO_TO_SERIAL 
-    Serial.println(" REPEAT"); 
-#endif  
+    LOG_SERIAL_LN(" REPEAT"); 
     break;  
 
   default: 
-#if ECHO_TO_SERIAL 
-    Serial.print(" other button   :");
-    Serial.println(results.value, HEX);
-#endif  
+    LOG_SERIAL(" other button   :");
+    LOG_SERIAL_LN(results.value, HEX);
   }// End Case
 } //END translateIR
 #endif
@@ -407,9 +393,7 @@ void setup(void)
   if (!bno.begin())
   {
     //There was a problem detecting the BNO055 ... check your connections
-#if SD_CARD_ON
-    logfile.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-#endif
+    LOG_SDCARD_LN("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!")
     error("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
   }
   delay(1000);
@@ -419,7 +403,7 @@ void setup(void)
   logfile.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");    
 #endif
 #if ECHO_TO_SERIAL
-  Serial.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");
+  LOG_SERIAL_LN("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");
 #endif //ECHO_TO_SERIAL 
 
   //attempt to write out the header to the file
@@ -454,10 +438,6 @@ void setup(void)
     delay(50);
   }
   
-  // Motor on:
-  //starttime = millis();
-  //motor_on_pwm(80);
-  
   // PID
   PID_input = 0.0;
   PID_setpoint = 80;
@@ -465,39 +445,34 @@ void setup(void)
   
 }
 
+
 //====================================================================
 //====================================================================
 void loop(void)
 {
-  
-//  if ((millis() - starttime) > 1000L)
-//  {
-//    motor_on_pwm(70);
-//  }
-
-  if ((millis() - starttime) > 60000L)
+  // Stop motor after some time
+  if ((millis() - starttime) > 60 * 1000)
   {
     motor_off_brake();
     while(1);
   }
   
-  // delay for the amount of time we want between readings
+  // Delay for the amount of time we want between readings
   uint32_t delayTime = (LOG_INTERVAL -1) - (millis() % LOG_INTERVAL);
   delay(delayTime);
 
-  // log milliseconds since starting
+  // Log milliseconds since starting
   uint32_t msec_since_start = millis();
   
   digitalWrite(green_LED_PIN, HIGH);
 
+  // Take all measurement values right at the beginning of the
+  // main loop to ensure taking them after the same interval
+  // all the time
   noInterrupts();
   int speedReading = speedCounter;  //calculate speed based on speedCounter
   speedCounter = 0;                 //reset speedCounter 
   interrupts();
-
-  PID_input = (float)speedReading;
-  PIDcontroller.Compute();
-  motor_on_pwm(PID_output);
   
   int trackVoltReading = analogRead(track_volt_PIN);    
   int engineVoltReading = analogRead(engine_volt_PIN);    
@@ -514,203 +489,73 @@ void loop(void)
   // - VECTOR_EULER         - degrees
   // - VECTOR_LINEARACCEL   - m/s^2
   // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> acceleration  = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  imu::Vector<3> lacceleration = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-  imu::Vector<3> gravity       = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
-  imu::Vector<3> magnometer    = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
-  imu::Vector<3> gyroscope     = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-  imu::Vector<3> euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  imu::Quaternion quat         = bno.getQuat();
+  acceleration  = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  lacceleration = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  gravity       = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+  magnometer    = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+  gyroscope     = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  quat          = bno.getQuat();
 
+  // Motor also as early as possible to ensure constant update intervals
+  PID_input = (float)speedReading;
+  PIDcontroller.Compute();
+  motor_on_pwm(PID_output);
+  
+  
 #if IR_ON
   if (irrecv.decode(&results)) // have we received an IR signal?
   {
-//    Serial.println(results.value, HEX);  UN Comment to see raw values
+//    LOG_SERIAL_LN(results.value, HEX);  UN Comment to see raw values
     translateIR(); 
     irrecv.resume(); // receive the next value
   }  
 #endif
 
-#if SD_CARD_ON
-  logfile.print(msec_since_start);
-  logfile.print(", ");    
-  logfile.print(delayTime);
-  logfile.print(", ");    
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(msec_since_start);
-  Serial.print(", ");  
-  Serial.print(delayTime);
-  Serial.print(", ");    
-#endif
 
-
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(accel_orient.orientation.x);
-  logfile.print(", ");    
-  logfile.print(accel_orient.orientation.y);
-  logfile.print(", ");    
-  logfile.print(accel_orient.orientation.z);
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(accel_orient.orientation.x);
-  Serial.print(", ");    
-  Serial.print(accel_orient.orientation.y);
-  Serial.print(", ");   
-  Serial.print(accel_orient.orientation.z);
-#endif //ECHO_TO_SERIAL
-
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(acceleration.x());
-  logfile.print(", ");    
-  logfile.print(acceleration.y());
-  logfile.print(", ");    
-  logfile.print(acceleration.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(acceleration.x());
-  Serial.print(", ");    
-  Serial.print(acceleration.y());
-  Serial.print(", ");   
-  Serial.print(acceleration.z());
-#endif //ECHO_TO_SERIAL
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(lacceleration.x());
-  logfile.print(", ");    
-  logfile.print(lacceleration.y());
-  logfile.print(", ");    
-  logfile.print(lacceleration.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(lacceleration.x());
-  Serial.print(", ");    
-  Serial.print(lacceleration.y());
-  Serial.print(", ");   
-  Serial.print(lacceleration.z());
-#endif //ECHO_TO_SERIAL
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(gravity.x());
-  logfile.print(", ");    
-  logfile.print(gravity.y());
-  logfile.print(", ");    
-  logfile.print(gravity.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(gravity.x());
-  Serial.print(", ");    
-  Serial.print(gravity.y());
-  Serial.print(", ");   
-  Serial.print(gravity.z());
-#endif //ECHO_TO_SERIAL
-
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(magnometer.x());
-  logfile.print(", ");    
-  logfile.print(magnometer.y());
-  logfile.print(", ");    
-  logfile.print(magnometer.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(magnometer.x());
-  Serial.print(", ");    
-  Serial.print(magnometer.y());
-  Serial.print(", ");   
-  Serial.print(magnometer.z());
-#endif //ECHO_TO_SERIAL
-
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(gyroscope.x());
-  logfile.print(", ");    
-  logfile.print(gyroscope.y());
-  logfile.print(", ");    
-  logfile.print(gyroscope.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(gyroscope.x());
-  Serial.print(", ");    
-  Serial.print(gyroscope.y());
-  Serial.print(", ");   
-  Serial.print(gyroscope.z());
-#endif //ECHO_TO_SERIAL
-
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(euler.x());
-  logfile.print(", ");    
-  logfile.print(euler.y());
-  logfile.print(", ");    
-  logfile.print(euler.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(euler.x());
-  Serial.print(", ");    
-  Serial.print(euler.y());
-  Serial.print(", ");   
-  Serial.print(euler.z());
-#endif //ECHO_TO_SERIAL
-
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(quat.w());
-  logfile.print(", ");    
-  logfile.print(quat.x());
-  logfile.print(", ");    
-  logfile.print(quat.y());
-  logfile.print(", ");    
-  logfile.print(quat.z());
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(quat.w());
-  Serial.print(", ");   
-  Serial.print(quat.x());
-  Serial.print(", ");    
-  Serial.print(quat.y());
-  Serial.print(", ");   
-  Serial.print(quat.z());
-#endif //ECHO_TO_SERIAL
+  // Log measurements to serial and/or flash:
+  LOG(msec_since_start)
+  LOG(delayTime)
   
-#if SD_CARD_ON
-  logfile.print(", ");    
-  logfile.print(speedReading);
-  logfile.print(", ");    
-  logfile.print(dirReading);
-  logfile.print(", ");    
-  logfile.print(trackVoltReading);
-  logfile.print(", ");    
-  logfile.println(engineVoltReading);
-#endif
-#if ECHO_TO_SERIAL
-  Serial.print(", ");   
-  Serial.print(speedReading);
-  Serial.print(", ");    
-  Serial.print(dirReading);
-  Serial.print(", ");    
-  Serial.print(trackVoltReading);
-  Serial.print(", ");    
-  Serial.println(engineVoltReading);
-#endif //ECHO_TO_SERIAL
-
+  LOG(accel_orient.orientation.x)
+  LOG(accel_orient.orientation.y)
+  LOG(accel_orient.orientation.z)
+  
+  LOG(acceleration.x())
+  LOG(acceleration.y())
+  LOG(acceleration.z())
+  
+  LOG(lacceleration.x())
+  LOG(lacceleration.y())
+  LOG(lacceleration.z())
+  
+  LOG(gravity.x())
+  LOG(gravity.y())
+  LOG(gravity.z())
+  
+  LOG(magnometer.x())
+  LOG(magnometer.y())
+  LOG(magnometer.z())
+  
+  LOG(gyroscope.x())
+  LOG(gyroscope.y())
+  LOG(gyroscope.z())
+  
+  LOG(euler.x())
+  LOG(euler.y())
+  LOG(euler.z())
+  
+  LOG(quat.w())
+  LOG(quat.x())
+  LOG(quat.y())
+  LOG(quat.z())
+  
+  LOG(speedReading)
+  LOG(dirReading)
+  LOG(trackVoltReading)    
+  LOG(engineVoltReading)
+  LOG_LN()
+  
 #if SD_CARD_ON
   logfile.flush();
 #endif
@@ -722,11 +567,11 @@ void loop(void)
   // We have to stop/start listening in order to receive ACK packets
   radio.stopListening();
 
-  //Serial.println(F("Transmitting on radio"));
+  //LOG_SERIAL_LN(F("Transmitting on radio"));
   radio.write(&message, sizeof(message_t) );
   //bool ok = radio.write(&message, sizeof(message_t) );
-  //if (ok)  Serial.println(F("ok..."));
-  //else     Serial.println(F("failed.\n"));
+  //if (ok)  LOG_SERIAL_LN(F("ok..."));
+  //else     LOG_SERIAL_LN(F("failed.\n"));
   radio.startListening();
 #endif //RADIO_ON
 
