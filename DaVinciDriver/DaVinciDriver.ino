@@ -78,32 +78,46 @@ const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};
 // Set up nRF24L01 radio on SPI bus
 RF24 radio(CE_Radio_PIN, CSN_Radio_PIN);
 
+// Acceleration and orientation
+sensors_event_t accel_orient;
+
 // Define IR variables
 #if IR_ON
 IRrecv irrecv(IR_receiver);           // create instance of 'irrecv'
 decode_results results;            // create instance of 'decode_results'
 #endif
 
-// Set up BNO055 sensor
+// BNO055 sensor and the data we read from it:
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
+imu::Vector<3> acceleration;
+imu::Vector<3> lacceleration;
+imu::Vector<3> gravity;
+imu::Vector<3> magnometer;
+imu::Vector<3> gyroscope;
+imu::Vector<3> euler;
+imu::Quaternion quat;
+
 
 #if SD_CARD_ON
 // the logging file
 File logfile;
 #endif
 
-// Structure of our message
+// Structure of our telemetry message
 struct message_t {
   uint32_t millis;
   int speed;
   int direction;
   int voltage;
 };
-
 message_t message;
 
-unsigned int speedCounter = 0;
+// Wheel encoder, updated by an interrupt routine
+volatile unsigned int speedCounter = 0;
 
+//----------------------------------------------------------------
+// Fatal error: print message to serial, red LED on, stop program.
+// TODO: should we also stop the motor?
 void error(const char *str)
 {
   Serial.print("error: ");
@@ -115,9 +129,10 @@ void error(const char *str)
   while(1);
 }
 
+//----------------------------------------------------------------
+// Decode and act on IR codes
 #if IR_ON
-void translateIR() // takes action based on IR code received
-// describing Remote IR codes 
+void translateIR() // takes action based on IR code received 
 {
   switch(results.value)
   {
@@ -469,8 +484,43 @@ void loop(void)
   // delay for the amount of time we want between readings
   uint32_t delayTime = (LOG_INTERVAL -1) - (millis() % LOG_INTERVAL);
   delay(delayTime);
+
+  // log milliseconds since starting
+  uint32_t msec_since_start = millis();
   
   digitalWrite(green_LED_PIN, HIGH);
+
+  noInterrupts();
+  int speedReading = speedCounter;  //calculate speed based on speedCounter
+  speedCounter = 0;                 //reset speedCounter 
+  interrupts();
+
+  PID_input = (float)speedReading;
+  PIDcontroller.Compute();
+  motor_on_pwm(PID_output);
+  
+  int trackVoltReading = analogRead(track_volt_PIN);    
+  int engineVoltReading = analogRead(engine_volt_PIN);    
+
+  // Read the acceleration and orientation:
+  bno.getEvent(&accel_orient);
+
+  int dirReading = int(accel_orient.orientation.x);
+
+  // Possible vector values can be:
+  // - VECTOR_ACCELEROMETER - m/s^2
+  // - VECTOR_MAGNETOMETER  - uT
+  // - VECTOR_GYROSCOPE     - rad/s
+  // - VECTOR_EULER         - degrees
+  // - VECTOR_LINEARACCEL   - m/s^2
+  // - VECTOR_GRAVITY       - m/s^2
+  imu::Vector<3> acceleration  = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> lacceleration = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  imu::Vector<3> gravity       = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+  imu::Vector<3> magnometer    = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+  imu::Vector<3> gyroscope     = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  imu::Vector<3> euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  imu::Quaternion quat         = bno.getQuat();
 
 #if IR_ON
   if (irrecv.decode(&results)) // have we received an IR signal?
@@ -481,51 +531,39 @@ void loop(void)
   }  
 #endif
 
-  // log milliseconds since starting
-  uint32_t m = millis();
 #if SD_CARD_ON
-  logfile.print(m);           // milliseconds since start
+  logfile.print(msec_since_start);
   logfile.print(", ");    
-  logfile.print(delayTime);   // delay time
+  logfile.print(delayTime);
   logfile.print(", ");    
 #endif
 #if ECHO_TO_SERIAL
-  Serial.print(m);         // milliseconds since start
+  Serial.print(msec_since_start);
   Serial.print(", ");  
-  Serial.print(delayTime);   // delay time
+  Serial.print(delayTime);
   Serial.print(", ");    
 #endif
 
 
-  //Get a new sensor event
-  sensors_event_t event;
-  bno.getEvent(&event);
 
 #if SD_CARD_ON
   logfile.print(", ");    
-  logfile.print(event.orientation.x);
+  logfile.print(accel_orient.orientation.x);
   logfile.print(", ");    
-  logfile.print(event.orientation.y);
+  logfile.print(accel_orient.orientation.y);
   logfile.print(", ");    
-  logfile.print(event.orientation.z);
+  logfile.print(accel_orient.orientation.z);
 #endif
 #if ECHO_TO_SERIAL
   Serial.print(", ");   
-  Serial.print(event.orientation.x);
+  Serial.print(accel_orient.orientation.x);
   Serial.print(", ");    
-  Serial.print(event.orientation.y);
+  Serial.print(accel_orient.orientation.y);
   Serial.print(", ");   
-  Serial.print(event.orientation.z);
+  Serial.print(accel_orient.orientation.z);
 #endif //ECHO_TO_SERIAL
 
-  // Possible vector values can be:
-  // - VECTOR_ACCELEROMETER - m/s^2
-  // - VECTOR_MAGNETOMETER  - uT
-  // - VECTOR_GYROSCOPE     - rad/s
-  // - VECTOR_EULER         - degrees
-  // - VECTOR_LINEARACCEL   - m/s^2
-  // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> acceleration = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(acceleration.x());
@@ -543,14 +581,6 @@ void loop(void)
   Serial.print(acceleration.z());
 #endif //ECHO_TO_SERIAL
 
-  // Possible vector values can be:
-  // - VECTOR_ACCELEROMETER - m/s^2
-  // - VECTOR_MAGNETOMETER  - uT
-  // - VECTOR_GYROSCOPE     - rad/s
-  // - VECTOR_EULER         - degrees
-  // - VECTOR_LINEARACCEL   - m/s^2
-  // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> lacceleration = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(lacceleration.x());
@@ -568,14 +598,6 @@ void loop(void)
   Serial.print(lacceleration.z());
 #endif //ECHO_TO_SERIAL
 
-  // Possible vector values can be:
-  // - VECTOR_ACCELEROMETER - m/s^2
-  // - VECTOR_MAGNETOMETER  - uT
-  // - VECTOR_GYROSCOPE     - rad/s
-  // - VECTOR_EULER         - degrees
-  // - VECTOR_LINEARACCEL   - m/s^2
-  // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(gravity.x());
@@ -593,14 +615,7 @@ void loop(void)
   Serial.print(gravity.z());
 #endif //ECHO_TO_SERIAL
 
-  // Possible vector values can be:
-  // - VECTOR_ACCELEROMETER - m/s^2
-  // - VECTOR_MAGNETOMETER  - uT
-  // - VECTOR_GYROSCOPE     - rad/s
-  // - VECTOR_EULER         - degrees
-  // - VECTOR_LINEARACCEL   - m/s^2
-  // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> magnometer = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(magnometer.x());
@@ -618,14 +633,7 @@ void loop(void)
   Serial.print(magnometer.z());
 #endif //ECHO_TO_SERIAL
 
-  // Possible vector values can be:
-  // - VECTOR_ACCELEROMETER - m/s^2
-  // - VECTOR_MAGNETOMETER  - uT
-  // - VECTOR_GYROSCOPE     - rad/s
-  // - VECTOR_EULER         - degrees
-  // - VECTOR_LINEARACCEL   - m/s^2
-  // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> gyroscope = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(gyroscope.x());
@@ -643,14 +651,7 @@ void loop(void)
   Serial.print(gyroscope.z());
 #endif //ECHO_TO_SERIAL
 
-  // Possible vector values can be:
-  // - VECTOR_ACCELEROMETER - m/s^2
-  // - VECTOR_MAGNETOMETER  - uT
-  // - VECTOR_GYROSCOPE     - rad/s
-  // - VECTOR_EULER         - degrees
-  // - VECTOR_LINEARACCEL   - m/s^2
-  // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(euler.x());
@@ -668,7 +669,6 @@ void loop(void)
   Serial.print(euler.z());
 #endif //ECHO_TO_SERIAL
 
-  imu::Quaternion quat = bno.getQuat();
 #if SD_CARD_ON
   logfile.print(", ");    
   logfile.print(quat.w());
@@ -689,21 +689,6 @@ void loop(void)
   Serial.print(", ");   
   Serial.print(quat.z());
 #endif //ECHO_TO_SERIAL
-
-  noInterrupts();
-  int speedReading = speedCounter;  //calculate speed based on speedCounter
-  speedCounter = 0;                 //reset speedCounter 
-  interrupts();
-
-  PID_input = (float)speedReading;
-  PIDcontroller.Compute();
-  motor_on_pwm(PID_output);
-  
-//  delay(10);
-  int dirReading = int(event.orientation.x);
-//  delay(10);
-  int trackVoltReading = analogRead(track_volt_PIN);    
-  int engineVoltReading = analogRead(engine_volt_PIN);    
   
 #if SD_CARD_ON
   logfile.print(", ");    
@@ -732,7 +717,7 @@ void loop(void)
 
 #if RADIO_ON
   // Construct the message we'll send
-  message = (message_t){m, speedReading, dirReading, trackVoltReading};
+  message = (message_t){msec_since_start, speedReading, dirReading, trackVoltReading};
   
   // We have to stop/start listening in order to receive ACK packets
   radio.stopListening();
@@ -743,7 +728,6 @@ void loop(void)
   //if (ok)  Serial.println(F("ok..."));
   //else     Serial.println(F("failed.\n"));
   radio.startListening();
-
 #endif //RADIO_ON
 
   digitalWrite(green_LED_PIN, LOW);
