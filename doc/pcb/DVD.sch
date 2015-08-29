@@ -12,7 +12,7 @@
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
+<layer number="19" name="Unrouted" color="11" fill="1" visible="yes" active="no"/>
 <layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
 <layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
 <layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
@@ -11997,7 +11997,7 @@ diameter 2.54 mm, horizontal, grid 10.16 mm</description>
 <rectangle x1="-4.064" y1="-0.254" x2="-3.556" y2="0.254" layer="51"/>
 <rectangle x1="-6.604" y1="-0.254" x2="-6.096" y2="0.254" layer="51"/>
 <rectangle x1="6.096" y1="-0.254" x2="6.604" y2="0.254" layer="51"/>
-<pad name="1" x="-6.35" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
+<pad name="1" x="-6.35" y="0" drill="1.016" diameter="2.032" shape="square" rot="R90"/>
 <pad name="2" x="-3.81" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
 <pad name="3" x="-1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
 <pad name="4" x="1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
@@ -12045,7 +12045,7 @@ diameter 2.54 mm, horizontal, grid 10.16 mm</description>
 <rectangle x1="1.016" y1="-1.524" x2="1.524" y2="-1.016" layer="51"/>
 <rectangle x1="3.556" y1="1.016" x2="4.064" y2="1.524" layer="51"/>
 <rectangle x1="3.556" y1="-1.524" x2="4.064" y2="-1.016" layer="51"/>
-<pad name="1" x="-3.81" y="-1.27" drill="1.016" diameter="1.778" shape="octagon"/>
+<pad name="1" x="-3.81" y="-1.27" drill="1.016" diameter="1.778" shape="square"/>
 <pad name="2" x="-3.81" y="1.27" drill="1.016" diameter="1.778" shape="octagon"/>
 <pad name="3" x="-1.27" y="-1.27" drill="1.016" diameter="1.778" shape="octagon"/>
 <pad name="4" x="-1.27" y="1.27" drill="1.016" diameter="1.778" shape="octagon"/>
@@ -12080,8 +12080,8 @@ diameter 2.54 mm, horizontal, grid 10.16 mm</description>
 <wire x1="-2.032" y1="0" x2="-1.7306" y2="-1.065" width="0.254" layer="51" curve="31.60822" cap="flat"/>
 <wire x1="-2.5908" y1="1.7272" x2="-1.8542" y2="1.7272" width="0.127" layer="21"/>
 <wire x1="-2.2352" y1="1.3208" x2="-2.2352" y2="2.1082" width="0.127" layer="21"/>
-<pad name="A" x="-1.27" y="0" drill="0.8128" diameter="1.6764" shape="octagon"/>
-<pad name="K" x="1.27" y="0" drill="0.8128" diameter="1.6764" shape="octagon"/>
+<pad name="A" x="-1.27" y="0" drill="0.9" diameter="1.778" shape="square"/>
+<pad name="K" x="1.27" y="0" drill="0.9" diameter="1.778" shape="octagon"/>
 <text x="1.905" y="0.381" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="1.905" y="-1.651" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
@@ -25005,9 +25005,9 @@ http://www.fairchildsemi.com/ds/LM/LM7805.pdf</description>
 <part name="U$2" library="DVD" deviceset="POLOLU_TB6612FNG" device=""/>
 <part name="U$3" library="DVD" deviceset="BNO055_LIGHT" device=""/>
 <part name="R8" library="resistor" deviceset="R-EU_" device="0207/10" value="220"/>
-<part name="LED1" library="adafruit" deviceset="LED" device="5MM" value="Amber"/>
+<part name="LED1" library="adafruit" deviceset="LED" device="3MM" value="Amber"/>
 <part name="R9" library="resistor" deviceset="R-EU_" device="0207/10" value="220"/>
-<part name="LED2" library="adafruit" deviceset="LED" device="5MM" value="Green"/>
+<part name="LED2" library="adafruit" deviceset="LED" device="3MM" value="Green"/>
 <part name="C5" library="rcl" deviceset="C-EU" device="025-024X044" value="100nF"/>
 <part name="JP14" library="pinhead" deviceset="PINHD-1X1" device="" value="P17"/>
 <part name="P+7" library="supply1" deviceset="+5V" device=""/>

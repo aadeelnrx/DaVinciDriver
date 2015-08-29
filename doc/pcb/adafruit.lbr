@@ -192,7 +192,7 @@
 <rectangle x1="-4.064" y1="-0.254" x2="-3.556" y2="0.254" layer="51"/>
 <rectangle x1="-6.604" y1="-0.254" x2="-6.096" y2="0.254" layer="51"/>
 <rectangle x1="6.096" y1="-0.254" x2="6.604" y2="0.254" layer="51"/>
-<pad name="1" x="-6.35" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
+<pad name="1" x="-6.35" y="0" drill="1.016" diameter="2.032" shape="square" rot="R90"/>
 <pad name="2" x="-3.81" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
 <pad name="3" x="-1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
 <pad name="4" x="1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
@@ -328,7 +328,7 @@
 <rectangle x1="1.016" y1="-1.524" x2="1.524" y2="-1.016" layer="51"/>
 <rectangle x1="3.556" y1="1.016" x2="4.064" y2="1.524" layer="51"/>
 <rectangle x1="3.556" y1="-1.524" x2="4.064" y2="-1.016" layer="51"/>
-<pad name="1" x="-3.81" y="-1.27" drill="1.016" diameter="1.778" shape="octagon"/>
+<pad name="1" x="-3.81" y="-1.27" drill="1.016" diameter="1.778" shape="square"/>
 <pad name="2" x="-3.81" y="1.27" drill="1.016" diameter="1.778" shape="octagon"/>
 <pad name="3" x="-1.27" y="-1.27" drill="1.016" diameter="1.778" shape="octagon"/>
 <pad name="4" x="-1.27" y="1.27" drill="1.016" diameter="1.778" shape="octagon"/>
@@ -679,8 +679,8 @@ IR transmitter Siemens</description>
 <wire x1="-2.032" y1="0" x2="-1.7306" y2="-1.065" width="0.254" layer="51" curve="31.60822" cap="flat"/>
 <wire x1="-2.5908" y1="1.7272" x2="-1.8542" y2="1.7272" width="0.127" layer="21"/>
 <wire x1="-2.2352" y1="1.3208" x2="-2.2352" y2="2.1082" width="0.127" layer="21"/>
-<pad name="A" x="-1.27" y="0" drill="0.8128" diameter="1.6764" shape="octagon"/>
-<pad name="K" x="1.27" y="0" drill="0.8128" diameter="1.6764" shape="octagon"/>
+<pad name="A" x="-1.27" y="0" drill="0.9" diameter="1.778" shape="square"/>
+<pad name="K" x="1.27" y="0" drill="0.9" diameter="1.778" shape="octagon"/>
 <text x="1.905" y="0.381" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="1.905" y="-1.651" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
