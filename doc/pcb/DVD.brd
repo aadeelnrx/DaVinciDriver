@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.0125" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.000000123031" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -38,8 +38,8 @@
 <layer number="42" name="bRestrict" color="1" fill="10" visible="no" active="yes"/>
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
@@ -141,10 +141,12 @@
 </layers>
 <board>
 <plain>
-<wire x1="4.82551875" y1="0.423290625" x2="52.845378125" y2="0.423290625" width="0" layer="20"/>
-<wire x1="52.845378125" y1="0.423290625" x2="52.760721875" y2="42.750390625" width="0" layer="20"/>
+<wire x1="4.757253125" y1="6.03023125" x2="6.03210625" y2="0.330128125" width="0" layer="20"/>
+<wire x1="6.03210625" y1="0.330128125" x2="51.948146875" y2="0.300115625" width="0" layer="20"/>
+<wire x1="51.948146875" y1="0.300115625" x2="52.81536875" y2="4.68495" width="0" layer="20"/>
+<wire x1="52.81536875" y1="4.68495" x2="52.760721875" y2="42.750390625" width="0" layer="20"/>
 <wire x1="52.760721875" y1="42.750390625" x2="4.7408625" y2="42.750390625" width="0" layer="20"/>
-<wire x1="4.7408625" y1="42.750390625" x2="4.82551875" y2="0.423290625" width="0" layer="20"/>
+<wire x1="4.7408625" y1="42.750390625" x2="4.757253125" y2="6.03023125" width="0" layer="20"/>
 <rectangle x1="51.943" y1="0.04241875" x2="52.02681875" y2="0.127" layer="200"/>
 <rectangle x1="51.77281875" y1="0.127" x2="52.11318125" y2="0.21158125" layer="200"/>
 <rectangle x1="4.52881875" y1="0.21158125" x2="52.87518125" y2="0.29641875" layer="200"/>
@@ -2302,6 +2304,14 @@
 <rectangle x1="0.21081875" y1="42.545" x2="57.277" y2="42.62958125" layer="200"/>
 <rectangle x1="0.381" y1="42.62958125" x2="57.10681875" y2="42.71441875" layer="200"/>
 <rectangle x1="0.381" y1="42.71441875" x2="57.10681875" y2="42.799" layer="200"/>
+<wire x1="15.5575" y1="8.255" x2="15.5575" y2="5.3975" width="0.254" layer="46" curve="-180"/>
+<wire x1="12.065" y1="5.3975" x2="12.065" y2="8.255" width="0.254" layer="46" curve="-180"/>
+<wire x1="12.065" y1="8.255" x2="15.5575" y2="8.255" width="0.254" layer="46"/>
+<wire x1="15.5575" y1="5.3975" x2="12.065" y2="5.3975" width="0.254" layer="46"/>
+<wire x1="45.55043125" y1="34.527253125" x2="48.40793125" y2="34.527253125" width="0.254" layer="46" curve="-180"/>
+<wire x1="48.40793125" y1="31.034753125" x2="45.55043125" y2="31.034753125" width="0.254" layer="46" curve="-180"/>
+<wire x1="45.55043125" y1="31.034753125" x2="45.55043125" y2="34.527253125" width="0.254" layer="46"/>
+<wire x1="48.40793125" y1="34.527253125" x2="48.40793125" y2="31.034753125" width="0.254" layer="46"/>
 </plain>
 <libraries>
 <library name="resistor">
@@ -4843,7 +4853,7 @@ Based on the following sources:
 <wire x1="0.635" y1="-1.27" x2="0" y2="-0.635" width="0.1524" layer="21"/>
 <rectangle x1="-1.524" y1="-0.254" x2="-1.016" y2="0.254" layer="51"/>
 <rectangle x1="1.016" y1="-0.254" x2="1.524" y2="0.254" layer="51"/>
-<pad name="1" x="-1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
+<pad name="1" x="-1.27" y="0" drill="1.016" diameter="2.032" shape="square" rot="R90"/>
 <pad name="2" x="1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
 <text x="-2.6162" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.54" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
@@ -5247,7 +5257,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <element name="JP8" library="pinhead" package="1X01" value="ENGINE2" x="44.45" y="40.64"/>
 <element name="JP9" library="pinhead" package="1X01" value="ENGINE1" x="48.26" y="40.64"/>
 <element name="LED1" library="adafruit" package="LED3MM" value="Amber" x="13.97" y="29.21" rot="R180"/>
-<element name="LED2" library="adafruit" package="LED3MM" value="Green" x="8.89" y="5.08"/>
+<element name="LED2" library="adafruit" package="LED3MM" value="Green" x="7.9375" y="6.35"/>
 <element name="NRF24L01" library="adafruit" package="2X04" value="" x="35.56" y="6.35"/>
 <element name="R1" library="resistor" package="0207/10" value="10K" x="16.51" y="17.78" rot="R270"/>
 <element name="R2" library="resistor" package="0207/10" value="5.6K" x="29.21" y="17.78" rot="R270"/>
@@ -5264,10 +5274,11 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <element name="U$4" library="Teensy_3_Series_Board_v1.0" package="TEENSY_3.1_BASIC_DVD_BIGPADS" value="TEENSY_3.1_BASIC_DVD_BP" x="22.86" y="17.78" rot="R90"/>
 <element name="VS1838" library="adafruit" package="PNA460XM" value="PNA460XM" x="16.51" y="2.54" rot="R180"/>
 <element name="JP3" library="pinhead" package="1X02" value="Chassis Switch" x="8.89" y="2.54" rot="R180"/>
-<element name="JP4" library="pinhead" package="1X04" value="" x="22.86" y="6.35"/>
+<element name="JP4" library="pinhead" package="1X04" value="" x="22.86" y="7.62"/>
 <element name="JP10" library="pinhead" package="1X03" value="Car Speed Sensor" x="50.8" y="7.62" rot="R270"/>
 <element name="JP1" library="pinhead" package="1X02" value="Pick-up" x="17.78" y="40.64" rot="R180"/>
 <element name="IC3" library="linear" package="TO220V" value="7805" x="10.16" y="43.18"/>
+<element name="JP2" library="pinhead" package="1X02" value="" x="25.4" y="5.08"/>
 </elements>
 <signals>
 <signal name="2/3V3OUT">
@@ -5369,6 +5380,9 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="24.13" y1="20.32" x2="20.32" y2="20.32" width="0.254" layer="16"/>
 <wire x1="20.32" y1="20.32" x2="20.32" y2="26.9875" width="0.254" layer="16"/>
 <wire x1="20.32" y1="26.9875" x2="21.59" y2="27.94" width="0.254" layer="16"/>
+<via x="17.145" y="4.7625" extent="1-16" drill="0.6" shape="square"/>
+<via x="13.0175" y="19.685" extent="1-16" drill="0.6" shape="square"/>
+<contactref element="JP2" pad="2"/>
 </signal>
 <signal name="+5V">
 <contactref element="R8" pad="2"/>
@@ -5403,22 +5417,16 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="16.383" y1="12.7635" x2="15.24" y2="13.9065" width="0.254" layer="16"/>
 <wire x1="10.287" y1="12.7635" x2="10.16" y2="12.7" width="0.254" layer="16"/>
 <wire x1="16.383" y1="12.7635" x2="16.51" y2="12.7" width="0.254" layer="16"/>
-<wire x1="8.5725" y1="4.953" x2="8.382" y2="4.953" width="0.254" layer="16"/>
-<wire x1="8.382" y1="4.953" x2="7.62" y2="4.953" width="0.254" layer="16"/>
-<wire x1="9.7155" y1="3.81" x2="8.5725" y2="4.953" width="0.254" layer="16"/>
 <wire x1="12.7635" y1="3.81" x2="9.7155" y2="3.81" width="0.254" layer="16"/>
 <wire x1="13.9065" y1="2.667" x2="12.7635" y2="3.81" width="0.254" layer="16"/>
-<wire x1="7.62" y1="4.953" x2="7.62" y2="5.08" width="0.254" layer="16"/>
 <wire x1="13.9065" y1="2.667" x2="13.97" y2="2.54" width="0.254" layer="16"/>
 <wire x1="21.336" y1="2.667" x2="22.86" y2="2.667" width="0.254" layer="16"/>
 <wire x1="20.193" y1="3.81" x2="21.336" y2="2.667" width="0.254" layer="16"/>
 <wire x1="15.24" y1="3.81" x2="20.193" y2="3.81" width="0.254" layer="16"/>
 <wire x1="13.97" y1="2.54" x2="15.24" y2="3.81" width="0.254" layer="16"/>
 <wire x1="22.86" y1="2.667" x2="22.86" y2="2.54" width="0.254" layer="16"/>
-<wire x1="10.0965" y1="6.6675" x2="10.0965" y2="12.573" width="0.254" layer="16"/>
-<wire x1="8.382" y1="4.953" x2="10.0965" y2="6.6675" width="0.254" layer="16"/>
+<wire x1="10.0965" y1="9.2075" x2="10.0965" y2="12.573" width="0.254" layer="16"/>
 <wire x1="10.0965" y1="12.573" x2="10.16" y2="12.7" width="0.254" layer="16"/>
-<wire x1="8.382" y1="4.953" x2="7.62" y2="5.08" width="0.254" layer="16"/>
 <wire x1="35.814" y1="40.767" x2="36.7665" y2="40.767" width="0.254" layer="16"/>
 <wire x1="34.671" y1="41.91" x2="35.814" y2="40.767" width="0.254" layer="16"/>
 <wire x1="13.97" y1="41.91" x2="34.671" y2="41.91" width="0.254" layer="16"/>
@@ -5440,6 +5448,11 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <via x="7.62" y="21.59" extent="1-16" drill="0.6" shape="square"/>
 <wire x1="7.62" y1="21.59" x2="7.62" y2="26.67" width="0.254" layer="16"/>
 <wire x1="7.62" y1="26.67" x2="8.89" y2="27.94" width="0.254" layer="16"/>
+<wire x1="10.0965" y1="9.2075" x2="6.6675" y2="6.35" width="0.254" layer="16"/>
+<wire x1="9.7155" y1="3.81" x2="6.6675" y2="6.35" width="0.254" layer="16"/>
+<contactref element="JP2" pad="1"/>
+<wire x1="24.13" y1="5.08" x2="24.13" y2="3.81" width="0.6096" layer="1"/>
+<wire x1="24.13" y1="3.81" x2="22.86" y2="2.54" width="0.6096" layer="1"/>
 </signal>
 <signal name="D4_IR">
 <contactref element="VS1838" pad="1"/>
@@ -5451,7 +5464,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="N$3">
 <contactref element="U$4" pad="5"/>
 <contactref element="JP4" pad="2"/>
-<wire x1="21.59" y1="10.16" x2="21.59" y2="6.35" width="0.254" layer="1"/>
+<wire x1="21.59" y1="10.16" x2="21.59" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="N$10">
 <contactref element="R3" pad="2"/>
@@ -5484,8 +5497,10 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="8.763" y1="10.287" x2="8.763" y2="13.1445" width="0.254" layer="16"/>
 <wire x1="16.383" y1="22.86" x2="16.51" y2="22.86" width="0.254" layer="16"/>
 <wire x1="8.763" y1="10.287" x2="8.89" y2="10.16" width="0.254" layer="16"/>
-<wire x1="8.89" y1="10.16" x2="8.89" y2="3.81" width="0.254" layer="1"/>
-<wire x1="8.89" y1="3.81" x2="10.16" y2="2.54" width="0.254" layer="1"/>
+<wire x1="8.89" y1="10.16" x2="8.89" y2="9.8425" width="0.254" layer="1"/>
+<wire x1="8.89" y1="9.8425" x2="7.9375" y2="8.89" width="0.254" layer="1"/>
+<wire x1="7.9375" y1="8.89" x2="7.9375" y2="4.445" width="0.254" layer="1"/>
+<wire x1="7.9375" y1="4.445" x2="10.16" y2="2.54" width="0.254" layer="1"/>
 </signal>
 <signal name="N$19">
 <contactref element="R9" pad="1"/>
@@ -5497,18 +5512,20 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="N$20">
 <contactref element="U$4" pad="2"/>
 <contactref element="JP4" pad="1"/>
-<wire x1="13.97" y1="10.16" x2="17.78" y2="6.35" width="0.254" layer="1"/>
-<wire x1="17.78" y1="6.35" x2="19.05" y2="6.35" width="0.254" layer="1"/>
+<wire x1="13.97" y1="10.16" x2="13.97" y2="9.525" width="0.254" layer="1"/>
+<wire x1="13.97" y1="9.525" x2="14.605" y2="8.89" width="0.254" layer="1"/>
+<wire x1="14.605" y1="8.89" x2="17.78" y2="8.89" width="0.254" layer="1"/>
+<wire x1="17.78" y1="8.89" x2="19.05" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="N$21">
 <contactref element="U$4" pad="6"/>
 <contactref element="JP4" pad="3"/>
-<wire x1="24.13" y1="10.16" x2="24.13" y2="6.35" width="0.254" layer="1"/>
+<wire x1="24.13" y1="10.16" x2="24.13" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="N$22">
 <contactref element="U$4" pad="7"/>
 <contactref element="JP4" pad="4"/>
-<wire x1="26.67" y1="10.16" x2="26.67" y2="6.35" width="0.254" layer="1"/>
+<wire x1="26.67" y1="10.16" x2="26.67" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="STBY">
 <contactref element="U$4" pad="20/A6"/>
@@ -5529,10 +5546,10 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="22.86" y1="13.1445" x2="15.24" y2="20.7645" width="0.254" layer="1"/>
 <wire x1="22.86" y1="12.192" x2="22.86" y2="13.1445" width="0.254" layer="1"/>
 <wire x1="23.622" y1="11.43" x2="22.86" y2="12.192" width="0.254" layer="1"/>
-<wire x1="27.051" y1="11.43" x2="23.622" y2="11.43" width="0.254" layer="1"/>
-<wire x1="28.0035" y1="10.4775" x2="27.051" y2="11.43" width="0.254" layer="1"/>
-<wire x1="28.0035" y1="8.763" x2="28.0035" y2="10.4775" width="0.254" layer="1"/>
-<wire x1="29.1465" y1="7.62" x2="28.0035" y2="8.763" width="0.254" layer="1"/>
+<wire x1="27.305" y1="11.43" x2="23.622" y2="11.43" width="0.254" layer="1"/>
+<wire x1="27.94" y1="10.795" x2="27.305" y2="11.43" width="0.254" layer="1"/>
+<wire x1="27.94" y1="8.89" x2="27.94" y2="10.795" width="0.254" layer="1"/>
+<wire x1="29.1465" y1="7.62" x2="27.94" y2="8.89" width="0.254" layer="1"/>
 <wire x1="29.1465" y1="7.62" x2="29.21" y2="7.62" width="0.254" layer="1"/>
 <wire x1="29.21" y1="7.62" x2="31.75" y2="7.62" width="0.254" layer="1"/>
 <via x="15.24" y="20.7645" extent="1-16" drill="0.3048"/>
@@ -5558,9 +5575,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="SPEED_SENSOR">
 <contactref element="IC2" pad="12"/>
 <contactref element="U$4" pad="3"/>
-<wire x1="16.9545" y1="10.0965" x2="16.5735" y2="10.0965" width="0.254" layer="16"/>
-<wire x1="20.3835" y1="6.6675" x2="16.9545" y2="10.0965" width="0.254" layer="16"/>
-<wire x1="20.3835" y1="5.9055" x2="20.3835" y2="6.6675" width="0.254" layer="16"/>
+<wire x1="20.3835" y1="5.9055" x2="20.3835" y2="8.255" width="0.254" layer="16"/>
 <wire x1="22.479" y1="3.81" x2="20.3835" y2="5.9055" width="0.254" layer="16"/>
 <wire x1="25.908" y1="3.81" x2="22.479" y2="3.81" width="0.254" layer="16"/>
 <wire x1="26.67" y1="3.048" x2="25.908" y2="3.81" width="0.254" layer="16"/>
@@ -5573,8 +5588,10 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="35.6235" y1="10.668" x2="35.6235" y2="4.7625" width="0.254" layer="16"/>
 <wire x1="42.672" y1="17.7165" x2="35.6235" y2="10.668" width="0.254" layer="16"/>
 <wire x1="43.053" y1="17.7165" x2="42.672" y2="17.7165" width="0.254" layer="16"/>
-<wire x1="16.5735" y1="10.0965" x2="16.51" y2="10.16" width="0.254" layer="16"/>
 <wire x1="43.053" y1="17.7165" x2="43.18" y2="17.78" width="0.254" layer="16"/>
+<wire x1="20.3835" y1="8.255" x2="19.685" y2="8.89" width="0.254" layer="16"/>
+<wire x1="19.685" y1="8.89" x2="17.78" y2="8.89" width="0.254" layer="16"/>
+<wire x1="17.78" y1="8.89" x2="16.51" y2="10.16" width="0.254" layer="16"/>
 </signal>
 <signal name="CSN_SD">
 <contactref element="SD_CARD" pad="1"/>
@@ -5647,28 +5664,29 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="SDA">
 <contactref element="U$3" pad="4"/>
 <contactref element="U$4" pad="18/A4"/>
-<wire x1="26.67" y1="24.5745" x2="26.67" y2="25.4" width="0.254" layer="16"/>
-<wire x1="28.0035" y1="23.241" x2="26.67" y2="24.5745" width="0.254" layer="16"/>
-<wire x1="28.0035" y1="9.7155" x2="28.0035" y2="23.241" width="0.254" layer="16"/>
-<wire x1="28.956" y1="8.763" x2="28.0035" y2="9.7155" width="0.254" layer="16"/>
-<wire x1="29.718" y1="8.763" x2="28.956" y2="8.763" width="0.254" layer="16"/>
-<wire x1="30.48" y1="8.001" x2="29.718" y2="8.763" width="0.254" layer="16"/>
-<wire x1="30.48" y1="2.54" x2="30.48" y2="8.001" width="0.254" layer="16"/>
+<wire x1="26.67" y1="24.765" x2="26.67" y2="25.4" width="0.254" layer="16"/>
+<wire x1="27.94" y1="23.495" x2="26.67" y2="24.765" width="0.254" layer="16"/>
+<wire x1="27.94" y1="9.525" x2="27.94" y2="23.495" width="0.254" layer="16"/>
+<wire x1="28.575" y1="8.89" x2="27.94" y2="9.525" width="0.254" layer="16"/>
+<wire x1="29.845" y1="8.89" x2="28.575" y2="8.89" width="0.254" layer="16"/>
+<wire x1="30.48" y1="8.255" x2="29.845" y2="8.89" width="0.254" layer="16"/>
+<wire x1="30.48" y1="2.54" x2="30.48" y2="8.255" width="0.254" layer="16"/>
 </signal>
 <signal name="SCL">
 <contactref element="U$3" pad="5"/>
 <contactref element="U$4" pad="19/A5"/>
-<wire x1="24.1935" y1="24.5745" x2="24.1935" y2="25.3365" width="0.254" layer="16"/>
-<wire x1="25.527" y1="23.241" x2="24.1935" y2="24.5745" width="0.254" layer="16"/>
-<wire x1="25.527" y1="9.144" x2="25.527" y2="23.241" width="0.254" layer="16"/>
-<wire x1="28.0035" y1="6.6675" x2="25.527" y2="9.144" width="0.254" layer="16"/>
-<wire x1="28.0035" y1="4.191" x2="28.0035" y2="6.6675" width="0.254" layer="16"/>
-<wire x1="29.337" y1="2.8575" x2="28.0035" y2="4.191" width="0.254" layer="16"/>
-<wire x1="29.337" y1="1.905" x2="29.337" y2="2.8575" width="0.254" layer="16"/>
-<wire x1="29.9085" y1="1.3335" x2="29.337" y2="1.905" width="0.254" layer="16"/>
+<wire x1="24.13" y1="24.765" x2="24.13" y2="25.4" width="0.254" layer="16"/>
+<wire x1="25.4" y1="23.495" x2="24.13" y2="24.765" width="0.254" layer="16"/>
+<wire x1="25.4" y1="9.2075" x2="25.4" y2="23.495" width="0.254" layer="16"/>
+<wire x1="27.94" y1="8.255" x2="27.305" y2="8.89" width="0.254" layer="16"/>
+<wire x1="27.305" y1="8.89" x2="25.7175" y2="8.89" width="0.254" layer="16"/>
+<wire x1="25.7175" y1="8.89" x2="25.4" y2="9.2075" width="0.254" layer="16"/>
+<wire x1="27.94" y1="4.445" x2="27.94" y2="8.255" width="0.254" layer="16"/>
+<wire x1="29.21" y1="3.175" x2="27.94" y2="4.445" width="0.254" layer="16"/>
+<wire x1="29.21" y1="1.905" x2="29.21" y2="3.175" width="0.254" layer="16"/>
+<wire x1="29.9085" y1="1.3335" x2="29.21" y2="1.905" width="0.254" layer="16"/>
 <wire x1="31.8135" y1="1.3335" x2="29.9085" y2="1.3335" width="0.254" layer="16"/>
 <wire x1="33.02" y1="2.54" x2="31.8135" y2="1.3335" width="0.254" layer="16"/>
-<wire x1="24.1935" y1="25.3365" x2="24.13" y2="25.4" width="0.254" layer="16"/>
 </signal>
 <signal name="JP8">
 <contactref element="JP8" pad="1"/>
@@ -5773,13 +5791,13 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="14.478" y1="24.003" x2="11.049" y2="24.003" width="0.254" layer="1"/>
 <wire x1="15.24" y1="23.241" x2="14.478" y2="24.003" width="0.254" layer="1"/>
 <wire x1="15.24" y1="22.479" x2="15.24" y2="23.241" width="0.254" layer="1"/>
-<wire x1="23.8125" y1="13.9065" x2="15.24" y2="22.479" width="0.254" layer="1"/>
-<wire x1="25.527" y1="13.9065" x2="23.8125" y2="13.9065" width="0.254" layer="1"/>
-<wire x1="26.67" y1="12.7635" x2="25.527" y2="13.9065" width="0.254" layer="1"/>
+<wire x1="24.13" y1="13.97" x2="15.24" y2="22.479" width="0.254" layer="1"/>
+<wire x1="25.4" y1="13.97" x2="24.13" y2="13.97" width="0.254" layer="1"/>
+<wire x1="26.67" y1="12.7" x2="25.4" y2="13.97" width="0.254" layer="1"/>
 <wire x1="8.9535" y1="25.3365" x2="8.89" y2="25.4" width="0.254" layer="1"/>
-<wire x1="26.67" y1="12.7635" x2="26.67" y2="12.7" width="0.254" layer="1"/>
-<wire x1="26.67" y1="12.7" x2="27.94" y2="11.43" width="0.254" layer="1"/>
-<wire x1="27.94" y1="11.43" x2="33.02" y2="11.43" width="0.254" layer="1"/>
+<wire x1="26.67" y1="12.7" x2="26.9875" y2="12.7" width="0.254" layer="1"/>
+<wire x1="26.9875" y1="12.7" x2="28.2575" y2="11.43" width="0.254" layer="1"/>
+<wire x1="28.2575" y1="11.43" x2="33.02" y2="11.43" width="0.254" layer="1"/>
 <wire x1="33.02" y1="11.43" x2="34.29" y2="12.7" width="0.254" layer="1"/>
 </signal>
 <signal name="N$6">
@@ -5804,13 +5822,12 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="N$4">
 <contactref element="LED2" pad="K"/>
 <contactref element="R9" pad="2"/>
-<wire x1="10.16" y1="5.08" x2="10.16" y2="6.35" width="0.254" layer="1"/>
-<wire x1="10.16" y1="6.35" x2="12.7" y2="8.89" width="0.254" layer="1"/>
-<wire x1="12.7" y1="8.89" x2="12.7" y2="11.43" width="0.254" layer="1"/>
+<wire x1="9.2075" y1="6.35" x2="9.2075" y2="8.255" width="0.254" layer="1"/>
+<wire x1="9.2075" y1="8.255" x2="9.8425" y2="8.89" width="0.254" layer="1"/>
+<wire x1="9.8425" y1="8.89" x2="12.065" y2="8.89" width="0.254" layer="1"/>
+<wire x1="12.065" y1="8.89" x2="12.7" y2="9.525" width="0.254" layer="1"/>
+<wire x1="12.7" y1="9.525" x2="12.7" y2="11.43" width="0.254" layer="1"/>
 <wire x1="12.7" y1="11.43" x2="13.97" y2="12.7" width="0.254" layer="1"/>
-</signal>
-<signal name="N$23">
-<via x="13.97" y="6.35" extent="1-16" drill="0.6" shape="square"/>
 </signal>
 </signals>
 </board>

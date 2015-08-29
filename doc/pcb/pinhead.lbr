@@ -175,7 +175,7 @@
 <wire x1="0.635" y1="-1.27" x2="0" y2="-0.635" width="0.1524" layer="21"/>
 <rectangle x1="-1.524" y1="-0.254" x2="-1.016" y2="0.254" layer="51"/>
 <rectangle x1="1.016" y1="-0.254" x2="1.524" y2="0.254" layer="51"/>
-<pad name="1" x="-1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
+<pad name="1" x="-1.27" y="0" drill="1.016" diameter="2.032" shape="square" rot="R90"/>
 <pad name="2" x="1.27" y="0" drill="1.016" diameter="2.032" shape="octagon" rot="R90"/>
 <text x="-2.6162" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.54" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
