@@ -8,8 +8,8 @@
 </settings>
 <grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.000000123031" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="yes"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="19" name="Unrouted" color="11" fill="1" visible="yes" active="yes"/>
@@ -18,7 +18,7 @@
 <layer number="22" name="bPlace" color="7" fill="1" visible="no" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="yes"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
@@ -2312,6 +2312,52 @@
 <wire x1="48.40793125" y1="31.034753125" x2="45.55043125" y2="31.034753125" width="0.254" layer="46" curve="-180"/>
 <wire x1="45.55043125" y1="31.034753125" x2="45.55043125" y2="34.527253125" width="0.254" layer="46"/>
 <wire x1="48.40793125" y1="34.527253125" x2="48.40793125" y2="31.034753125" width="0.254" layer="46"/>
+<text x="41.411821875" y="36.15265625" size="1.27" layer="25">DaVinciDriver</text>
+<text x="50.083528125" y="34.73490625" size="1.27" layer="25">R1</text>
+<wire x1="18.7029875" y1="0.50705625" x2="19.045534375" y2="0.50705625" width="0.2032" layer="25"/>
+<wire x1="19.045534375" y1="0.50705625" x2="19.045534375" y2="1.055221875" width="0.2032" layer="25"/>
+<wire x1="19.045534375" y1="1.055221875" x2="19.4565875" y2="1.055221875" width="0.2032" layer="25"/>
+<wire x1="19.4565875" y1="1.055221875" x2="19.464903125" y2="0.50705625" width="0.2032" layer="25"/>
+<wire x1="19.464903125" y1="0.50705625" x2="19.82115" y2="0.504359375" width="0.2032" layer="25"/>
+<wire x1="19.0334" y1="42.598796875" x2="19.0334" y2="42.096425" width="0.15" layer="25"/>
+<wire x1="18.793628125" y1="42.359028125" x2="19.284590625" y2="42.359028125" width="0.15" layer="25"/>
+<wire x1="16.315975" y1="42.381865625" x2="16.829775" y2="42.381865625" width="0.15" layer="25"/>
+<wire x1="17.4006625" y1="42.56454375" x2="17.4006625" y2="42.17635" width="0.15" layer="25"/>
+<wire x1="17.777446875" y1="42.16493125" x2="17.777446875" y2="42.541709375" width="0.15" layer="25"/>
+<wire x1="17.777446875" y1="42.541709375" x2="18.062890625" y2="42.17635" width="0.15" layer="25"/>
+<wire x1="18.062890625" y1="42.17635" x2="18.062890625" y2="42.553128125" width="0.15" layer="25"/>
+<wire x1="42.017709375" y1="41.37288125" x2="42.017709375" y2="39.666784375" width="0.15" layer="25"/>
+<wire x1="41.250134375" y1="40.576703125" x2="42.75685625" y2="40.576703125" width="0.15" layer="25"/>
+<wire x1="50.11990625" y1="40.6051375" x2="51.62663125" y2="40.6051375" width="0.15" layer="25"/>
+<wire x1="46.02441875" y1="41.34110625" x2="46.02441875" y2="42.176971875" width="0.15" layer="25"/>
+<wire x1="46.02441875" y1="42.176971875" x2="46.312159375" y2="41.8755125" width="0.15" layer="25"/>
+<wire x1="46.312159375" y1="41.8755125" x2="46.5313875" y2="42.176971875" width="0.15" layer="25"/>
+<wire x1="46.5313875" y1="42.176971875" x2="46.538484375" y2="41.34110625" width="0.15" layer="25"/>
+<wire x1="46.02441875" y1="41.018359375" x2="46.503984375" y2="41.012240625" width="0.15" layer="25"/>
+<wire x1="46.503984375" y1="41.012240625" x2="46.503984375" y2="40.2997" width="0.15" layer="25"/>
+<wire x1="46.503984375" y1="40.2997" x2="46.02638125" y2="40.305815625" width="0.15" layer="25"/>
+<wire x1="46.02638125" y1="40.305815625" x2="46.024909375" y2="41.00465625" width="0.15" layer="25"/>
+<wire x1="46.040571875" y1="39.847021875" x2="46.558790625" y2="39.847509375" width="0.15" layer="25"/>
+<wire x1="46.305553125" y1="39.848" x2="46.305553125" y2="39.12175625" width="0.15" layer="25"/>
+<wire x1="52.07" y1="7.62" x2="52.66405625" y2="7.6209125" width="0.15" layer="25"/>
+<wire x1="52.1027875" y1="7.60188125" x2="52.350128125" y2="7.411596875" width="0.15" layer="25"/>
+<wire x1="52.350128125" y1="7.411596875" x2="52.350128125" y2="7.85876875" width="0.15" layer="25"/>
+<wire x1="52.350128125" y1="7.85876875" x2="52.093275" y2="7.6209125" width="0.15" layer="25"/>
+<wire x1="52.1027875" y1="10.237328125" x2="52.597465625" y2="10.237328125" width="0.15" layer="25"/>
+<wire x1="52.597465625" y1="10.237328125" x2="52.626003125" y2="10.237328125" width="0.15" layer="25"/>
+<wire x1="52.626003125" y1="10.237328125" x2="52.378665625" y2="10.44664375" width="0.15" layer="25"/>
+<wire x1="52.378665625" y1="10.44664375" x2="52.378665625" y2="10.028015625" width="0.15" layer="25"/>
+<wire x1="52.378665625" y1="10.028015625" x2="52.597465625" y2="10.237328125" width="0.15" layer="25"/>
+<wire x1="52.450575" y1="5.42684375" x2="52.450575" y2="4.837565625" width="0.15" layer="25"/>
+<wire x1="52.21764375" y1="4.81015625" x2="52.68350625" y2="4.81015625" width="0.15" layer="25"/>
+<wire x1="22.03253125" y1="5.55018125" x2="22.70391875" y2="5.563884375" width="0.15" layer="25"/>
+<wire x1="22.388778125" y1="5.92019375" x2="22.375075" y2="5.18016875" width="0.15" layer="25"/>
+<wire x1="49.181840625" y1="32.43153125" x2="49.189078125" y2="31.651671875" width="0.15" layer="25"/>
+<wire x1="48.784503125" y1="31.620734375" x2="49.589715625" y2="31.620734375" width="0.15" layer="25"/>
+<wire x1="5.150309375" y1="37.80008125" x2="5.150309375" y2="38.43508125" width="0.1524" layer="21"/>
+<wire x1="5.4689125" y1="37.800078125" x2="5.4689125" y2="38.435078125" width="0.1524" layer="21"/>
+<wire x1="5.4689125" y1="38.435078125" x2="6.1039125" y2="37.800078125" width="0.1524" layer="21"/>
+<wire x1="6.1039125" y1="37.800078125" x2="6.1039125" y2="38.435078125" width="0.1524" layer="21"/>
 </plain>
 <libraries>
 <library name="resistor">
@@ -5241,52 +5287,165 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </pass>
 </autorouter>
 <elements>
-<element name="C1" library="resistor" package="C025-025X050" value="100 nF" x="7.62" y="27.94" rot="R180"/>
-<element name="C2" library="resistor" package="P128-50" value="0.22F" x="8.89" y="34.29" rot="R180"/>
-<element name="C3" library="resistor" package="C025-025X050" value="100 nF" x="46.99" y="10.16"/>
-<element name="C4" library="resistor" package="C025-025X050" value="100nF" x="29.21" y="6.35" rot="R270"/>
-<element name="C5" library="rcl" package="C025-024X044" value="100nF" x="46.99" y="5.08"/>
-<element name="C6" library="rcl" package="E2,5-6" value="100 uF" x="16.51" y="34.29" rot="R180"/>
-<element name="D1" library="adafruit" package="DO41-10" value="1N4004" x="19.05" y="33.02" rot="R90"/>
-<element name="D2" library="diode" package="ZDIO-7.5" value="ZF3.3" x="24.13" y="17.78" rot="R270"/>
-<element name="D3" library="adafruit" package="DO41-10" value="1N4148" x="10.16" y="17.78" rot="R270"/>
-<element name="D4" library="diode" package="ZDIO-7.5" value="ZF3.3" x="31.75" y="17.78" rot="R270"/>
-<element name="IC2" library="74xx-eu" package="DIL14" value="74HC14N" x="46.99" y="20.32" rot="R90"/>
-<element name="JP14" library="pinhead" package="1X01" value="P17" x="43.18" y="33.02"/>
-<element name="JP15" library="pinhead" package="1X01" value="GND" x="50.8" y="33.02"/>
-<element name="JP8" library="pinhead" package="1X01" value="ENGINE2" x="44.45" y="40.64"/>
-<element name="JP9" library="pinhead" package="1X01" value="ENGINE1" x="48.26" y="40.64"/>
-<element name="LED1" library="adafruit" package="LED3MM" value="Amber" x="13.97" y="29.21" rot="R180"/>
-<element name="LED2" library="adafruit" package="LED3MM" value="Green" x="7.9375" y="6.35"/>
-<element name="NRF24L01" library="adafruit" package="2X04" value="" x="35.56" y="6.35"/>
-<element name="R1" library="resistor" package="0207/10" value="10K" x="16.51" y="17.78" rot="R270"/>
-<element name="R2" library="resistor" package="0207/10" value="5.6K" x="29.21" y="17.78" rot="R270"/>
-<element name="R3" library="resistor" package="0207/10" value="1K" x="34.29" y="17.78" rot="R90"/>
-<element name="R4" library="resistor" package="0207/10" value="5.6K" x="21.59" y="17.78" rot="R270"/>
-<element name="R5" library="resistor" package="0207/10" value="1K" x="26.67" y="17.78" rot="R90"/>
-<element name="R6" library="resistor" package="0207/10" value="220" x="45.72" y="20.32" rot="R90"/>
-<element name="R7" library="resistor" package="0207/10" value="10K" x="48.26" y="20.32" rot="R90"/>
-<element name="R8" library="resistor" package="0207/10" value="220" x="19.05" y="17.78" rot="R270"/>
-<element name="R9" library="resistor" package="0207/10" value="220" x="13.97" y="17.78" rot="R270"/>
-<element name="SD_CARD" library="adafruit" package="1X06" value="" x="44.45" y="2.54"/>
-<element name="U$2" library="DVD" package="DIL16WIDE" value="POLOLU_TB6612FNG" x="31.75" y="34.29" rot="R180"/>
-<element name="U$3" library="DVD" package="DIL12-6-0" value="BNO055_LIGHT" x="29.21" y="2.54"/>
-<element name="U$4" library="Teensy_3_Series_Board_v1.0" package="TEENSY_3.1_BASIC_DVD_BIGPADS" value="TEENSY_3.1_BASIC_DVD_BP" x="22.86" y="17.78" rot="R90"/>
-<element name="VS1838" library="adafruit" package="PNA460XM" value="PNA460XM" x="16.51" y="2.54" rot="R180"/>
-<element name="JP3" library="pinhead" package="1X02" value="Chassis Switch" x="8.89" y="2.54" rot="R180"/>
-<element name="JP4" library="pinhead" package="1X04" value="" x="22.86" y="7.62"/>
-<element name="JP10" library="pinhead" package="1X03" value="Car Speed Sensor" x="50.8" y="7.62" rot="R270"/>
-<element name="JP1" library="pinhead" package="1X02" value="Pick-up" x="17.78" y="40.64" rot="R180"/>
-<element name="IC3" library="linear" package="TO220V" value="7805" x="10.16" y="43.18"/>
-<element name="JP2" library="pinhead" package="1X02" value="" x="25.4" y="5.08"/>
+<element name="C1" library="resistor" package="C025-025X050" value="100 nF" x="7.62" y="27.94" smashed="yes" rot="R180">
+<attribute name="NAME" x="8.824465625" y="30.203834375" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="9.906" y="30.734" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="C2" library="resistor" package="P128-50" value="0.22F" x="8.89" y="34.29" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.054290625" y="37.370553125" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="11.049" y="37.592" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="C3" library="resistor" package="C025-025X050" value="100 nF" x="46.99" y="10.16" smashed="yes">
+<attribute name="NAME" x="42.295121875" y="9.81468125" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="44.704" y="7.366" size="1.27" layer="27" ratio="10"/>
+</element>
+<element name="C4" library="resistor" package="C025-025X050" value="100nF" x="29.21" y="6.35" smashed="yes" rot="R270">
+<attribute name="NAME" x="29.79994375" y="7.455378125" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="26.416" y="8.636" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="C5" library="rcl" package="C025-024X044" value="100nF" x="46.99" y="5.08" smashed="yes">
+<attribute name="NAME" x="45.851090625" y="6.18184375" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="45.212" y="2.413" size="1.27" layer="27" ratio="10"/>
+</element>
+<element name="C6" library="rcl" package="E2,5-6" value="100 uF" x="15.24" y="34.29" smashed="yes" rot="R180">
+<attribute name="NAME" x="16.309221875" y="36.75060625" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="12.573" y="36.957" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="D1" library="adafruit" package="DO41-10" value="1N4004" x="19.05" y="33.02" smashed="yes" rot="R90">
+<attribute name="NAME" x="18.529696875" y="28.774328125" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="21.844" y="30.988" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="D2" library="diode" package="ZDIO-7.5" value="ZF3.3" x="24.13" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="22.832990625" y="15.940246875" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="21.082" y="20.32" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="D3" library="adafruit" package="DO41-10" value="1N4148" x="10.16" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="8.345128125" y="15.710990625" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="7.366" y="19.812" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="D4" library="diode" package="ZDIO-7.5" value="ZF3.3" x="31.75" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="30.452990625" y="16.03863125" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="28.702" y="20.32" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="IC2" library="74xx-eu" package="DIL14" value="74HC14N" x="46.99" y="20.32" smashed="yes" rot="R90">
+<attribute name="NAME" x="48.386440625" y="13.99998125" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="47.625" y="13.589" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="JP14" library="pinhead" package="1X01" value="P17" x="43.18" y="33.02" smashed="yes">
+<attribute name="NAME" x="41.16520625" y="30.123171875" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="41.91" y="29.845" size="1.27" layer="27"/>
+</element>
+<element name="JP15" library="pinhead" package="1X01" value="GND" x="50.8" y="33.02" smashed="yes">
+<attribute name="NAME" x="48.588575" y="30.064103125" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="49.53" y="29.845" size="1.27" layer="27"/>
+</element>
+<element name="JP8" library="pinhead" package="1X01" value="ENGINE2" x="44.45" y="40.64" smashed="yes">
+<attribute name="NAME" x="42.857996875" y="37.74630625" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="43.18" y="37.465" size="1.27" layer="27"/>
+</element>
+<element name="JP9" library="pinhead" package="1X01" value="ENGINE1" x="48.26" y="40.64" smashed="yes">
+<attribute name="NAME" x="46.766315625" y="37.7955" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="46.99" y="37.465" size="1.27" layer="27"/>
+</element>
+<element name="LED1" library="adafruit" package="LED3MM" value="Amber" x="13.97" y="29.21" smashed="yes" rot="R180">
+<attribute name="NAME" x="15.604578125" y="28.28788125" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="12.065" y="30.861" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="LED2" library="adafruit" package="LED3MM" value="Green" x="7.9375" y="6.35" smashed="yes">
+<attribute name="NAME" x="6.00795625" y="4.1237875" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="9.8425" y="4.699" size="1.27" layer="27" ratio="10"/>
+</element>
+<element name="NRF24L01" library="adafruit" package="2X04" value="" x="35.56" y="6.35" smashed="yes">
+<attribute name="NAME" x="31.51238125" y="5.786359375" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="30.48" y="1.905" size="1.27" layer="27"/>
+</element>
+<element name="R1" library="resistor" package="0207/10" value="10K" x="16.51" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="16.01840625" y="19.2538375" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="15.875" y="20.0406" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R2" library="resistor" package="0207/10" value="5.6K" x="29.21" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="28.620084375" y="18.61433125" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="28.575" y="20.0406" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R3" library="resistor" package="0207/10" value="1K" x="34.29" y="17.78" smashed="yes" rot="R90">
+<attribute name="NAME" x="34.978234375" y="17.191634375" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="34.925" y="15.5194" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R4" library="resistor" package="0207/10" value="5.6K" x="21.59" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="21.000084375" y="18.171596875" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="20.955" y="20.0406" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R5" library="resistor" package="0207/10" value="1K" x="26.67" y="17.78" smashed="yes" rot="R90">
+<attribute name="NAME" x="27.358234375" y="16.45374375" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="27.305" y="15.5194" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R6" library="resistor" package="0207/10" value="220" x="45.72" y="20.32" smashed="yes" rot="R90">
+<attribute name="NAME" x="46.359075" y="19.092128125" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="46.355" y="18.0594" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R7" library="resistor" package="0207/10" value="10K" x="48.26" y="20.32" smashed="yes" rot="R90">
+<attribute name="NAME" x="48.948234375" y="19.042934375" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="48.895" y="18.0594" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="R8" library="resistor" package="0207/10" value="220" x="19.05" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="18.509246875" y="18.76190625" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="18.415" y="20.0406" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="R9" library="resistor" package="0207/10" value="220" x="13.97" y="17.78" smashed="yes" rot="R270">
+<attribute name="NAME" x="13.47840625" y="19.253834375" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="13.335" y="20.0406" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="SD_CARD" library="adafruit" package="1X06" value="" x="44.45" y="2.54" smashed="yes">
+<attribute name="NAME" x="40.047575" y="0.4333875" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="36.83" y="-0.635" size="1.27" layer="27"/>
+</element>
+<element name="IC4" library="DVD" package="DIL16WIDE" value="POLOLU_TB6612FNG" x="31.75" y="34.29" smashed="yes" rot="R180">
+<attribute name="NAME" x="38.964428125" y="38.8163375" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="37.973" y="32.385" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="BNO055" library="DVD" package="DIL12-6-0" value="BNO055_LIGHT" x="29.21" y="2.54" smashed="yes">
+<attribute name="NAME" x="32.25795625" y="1.693740625" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="29.337" y="4.445" size="1.27" layer="27" ratio="10"/>
+</element>
+<element name="IC1" library="Teensy_3_Series_Board_v1.0" package="TEENSY_3.1_BASIC_DVD_BIGPADS" value="TEENSY_3.1_BASIC_DVD_BP" x="22.86" y="17.78" smashed="yes" rot="R90">
+<attribute name="NAME" x="6.6777625" y="13.478075" size="1.27" layer="25" font="vector" rot="R90"/>
+<attribute name="VALUE" x="17.78" y="13.97" size="1.27" layer="27" font="vector" rot="R90"/>
+</element>
+<element name="VS1838" library="adafruit" package="PNA460XM" value="PNA460XM" x="16.51" y="2.54" smashed="yes" rot="R180">
+<attribute name="NAME" x="18.49413125" y="1.673265625" size="1.27" layer="25" ratio="10" rot="R180"/>
+</element>
+<element name="JP3" library="pinhead" package="1X02" value="Chassis Switch" x="8.89" y="2.54" smashed="yes" rot="R180">
+<attribute name="NAME" x="10.080534375" y="1.744246875" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="11.43" y="5.715" size="1.27" layer="27" rot="R180"/>
+</element>
+<element name="JP4" library="pinhead" package="1X04" value="" x="22.86" y="7.62" smashed="yes">
+<attribute name="NAME" x="18.146246875" y="5.11984375" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="17.78" y="4.445" size="1.27" layer="27"/>
+</element>
+<element name="JP10" library="pinhead" package="1X03" value="Car Speed Sensor" x="50.8" y="7.62" smashed="yes" rot="R270">
+<attribute name="NAME" x="45.478603125" y="7.45469375" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="47.625" y="11.43" size="1.27" layer="27" rot="R270"/>
+</element>
+<element name="JP1" library="pinhead" package="1X02" value="Pick-up" x="17.78" y="40.64" smashed="yes" rot="R180">
+<attribute name="NAME" x="18.03648125" y="39.00796875" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="20.32" y="43.815" size="1.27" layer="27" rot="R180"/>
+</element>
+<element name="IC3" library="linear" package="TO220V" value="7805" x="10.16" y="43.18" smashed="yes">
+<attribute name="NAME" x="8.503740625" y="38.179771875" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="5.08" y="35.56" size="1.27" layer="27" ratio="10"/>
+</element>
+<element name="JP2" library="pinhead" package="1X02" value="" x="25.4" y="5.08" smashed="yes">
+<attribute name="NAME" x="19.981634375" y="3.8096625" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="22.86" y="1.905" size="1.27" layer="27"/>
+</element>
 </elements>
 <signals>
 <signal name="2/3V3OUT">
-<contactref element="U$3" pad="2"/>
+<contactref element="BNO055" pad="2"/>
 </signal>
 <signal name="V+">
 <contactref element="R2" pad="2"/>
-<contactref element="U$2" pad="7"/>
+<contactref element="IC4" pad="7"/>
 <contactref element="D1" pad="C"/>
 <contactref element="C6" pad="+"/>
 <contactref element="IC3" pad="1"/>
@@ -5294,35 +5453,29 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="40.9575" y1="25.3365" x2="29.337" y2="13.716" width="0.254" layer="16"/>
 <wire x1="40.9575" y1="28.575" x2="40.9575" y2="25.3365" width="0.254" layer="16"/>
 <wire x1="35.2425" y1="34.29" x2="40.9575" y2="28.575" width="0.254" layer="16"/>
-<wire x1="17.78" y1="34.29" x2="20.32" y2="34.29" width="0.254" layer="16"/>
+<wire x1="16.51" y1="34.29" x2="20.32" y2="34.29" width="0.254" layer="16"/>
 <wire x1="20.32" y1="34.29" x2="35.2425" y2="34.29" width="0.254" layer="16"/>
 <wire x1="29.337" y1="12.7635" x2="29.21" y2="12.7" width="0.254" layer="16"/>
-<wire x1="17.78" y1="34.29" x2="20.32" y2="34.29" width="1.27" layer="1"/>
+<wire x1="16.51" y1="34.29" x2="20.32" y2="34.29" width="1.27" layer="1"/>
 <wire x1="20.32" y1="34.29" x2="24.13" y2="38.1" width="1.27" layer="1"/>
 <wire x1="24.13" y1="38.1" x2="24.13" y2="40.64" width="1.27" layer="1"/>
 <via x="20.2565" y="33.02" extent="1-16" drill="0.6" shape="square"/>
-<wire x1="19.05" y1="27.94" x2="17.78" y2="26.67" width="0.254" layer="16"/>
-<wire x1="17.78" y1="26.67" x2="17.78" y2="24.765" width="0.254" layer="16"/>
-<wire x1="17.78" y1="24.765" x2="17.145" y2="24.13" width="0.254" layer="16"/>
-<wire x1="17.145" y1="24.13" x2="15.875" y2="24.13" width="0.254" layer="16"/>
-<wire x1="15.875" y1="24.13" x2="15.24" y2="24.765" width="0.254" layer="16"/>
-<wire x1="15.24" y1="24.765" x2="15.24" y2="26.67" width="0.254" layer="16"/>
-<wire x1="15.24" y1="26.67" x2="17.78" y2="29.21" width="0.254" layer="16"/>
-<wire x1="17.78" y1="29.21" x2="17.78" y2="34.29" width="0.254" layer="16"/>
 <wire x1="20.2565" y1="33.02" x2="20.32" y2="33.0835" width="0.254" layer="16"/>
 <wire x1="20.32" y1="33.0835" x2="20.32" y2="34.29" width="0.254" layer="16"/>
 <wire x1="7.62" y1="40.64" x2="7.62" y2="38.1" width="1.27" layer="16"/>
 <wire x1="7.62" y1="38.1" x2="8.89" y2="36.83" width="1.27" layer="16"/>
-<wire x1="8.89" y1="36.83" x2="16.51" y2="36.83" width="1.27" layer="16"/>
-<wire x1="16.51" y1="36.83" x2="17.78" y2="35.56" width="1.27" layer="16"/>
-<wire x1="17.78" y1="35.56" x2="17.78" y2="34.29" width="1.27" layer="16"/>
+<wire x1="8.89" y1="36.83" x2="15.24" y2="36.83" width="1.27" layer="16"/>
+<wire x1="15.24" y1="36.83" x2="16.51" y2="35.56" width="1.27" layer="16"/>
+<wire x1="16.51" y1="35.56" x2="16.51" y2="34.29" width="1.27" layer="16"/>
+<wire x1="19.05" y1="27.94" x2="19.05" y2="31.75" width="1.27" layer="16"/>
+<wire x1="19.05" y1="31.75" x2="16.51" y2="34.29" width="1.27" layer="16"/>
 </signal>
 <signal name="GND">
 <contactref element="LED1" pad="K"/>
 <contactref element="C1" pad="2"/>
 <contactref element="C2" pad="-"/>
 <contactref element="C6" pad="-"/>
-<contactref element="U$4" pad="GND"/>
+<contactref element="IC1" pad="GND"/>
 <contactref element="VS1838" pad="2"/>
 <contactref element="IC2" pad="7"/>
 <contactref element="C3" pad="2"/>
@@ -5330,10 +5483,10 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <contactref element="C5" pad="2"/>
 <contactref element="NRF24L01" pad="1"/>
 <contactref element="C4" pad="2"/>
-<contactref element="U$3" pad="3"/>
-<contactref element="U$2" pad="9"/>
-<contactref element="U$2" pad="1"/>
-<contactref element="U$2" pad="8"/>
+<contactref element="BNO055" pad="3"/>
+<contactref element="IC4" pad="9"/>
+<contactref element="IC4" pad="1"/>
+<contactref element="IC4" pad="8"/>
 <contactref element="D4" pad="A"/>
 <contactref element="D2" pad="A"/>
 <contactref element="JP15" pad="1"/>
@@ -5376,13 +5529,14 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <via x="39.37" y="20.32" extent="1-16" drill="0.6" shape="square"/>
 <via x="40.64" y="12.7" extent="1-16" drill="0.6" shape="square"/>
 <via x="43.18" y="8.89" extent="1-16" drill="0.6" shape="square"/>
-<via x="48.26" y="36.83" extent="1-16" drill="0.6" shape="square"/>
+<via x="41.1220625" y="34.82151875" extent="1-16" drill="0.6" shape="square"/>
 <wire x1="24.13" y1="20.32" x2="20.32" y2="20.32" width="0.254" layer="16"/>
-<wire x1="20.32" y1="20.32" x2="20.32" y2="26.9875" width="0.254" layer="16"/>
-<wire x1="20.32" y1="26.9875" x2="21.59" y2="27.94" width="0.254" layer="16"/>
 <via x="17.145" y="4.7625" extent="1-16" drill="0.6" shape="square"/>
 <via x="13.0175" y="19.685" extent="1-16" drill="0.6" shape="square"/>
 <contactref element="JP2" pad="2"/>
+<contactref element="IC3" pad="2"/>
+<wire x1="22.86" y1="26.9875" x2="22.86" y2="26.67" width="0.4064" layer="16"/>
+<wire x1="22.86" y1="26.67" x2="22.86" y2="21.59" width="0.4064" layer="16"/>
 </signal>
 <signal name="+5V">
 <contactref element="R8" pad="2"/>
@@ -5393,8 +5547,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <contactref element="R1" pad="2"/>
 <contactref element="D3" pad="A"/>
 <contactref element="C5" pad="1"/>
-<contactref element="U$3" pad="1"/>
-<contactref element="U$2" pad="2"/>
+<contactref element="BNO055" pad="1"/>
+<contactref element="IC4" pad="2"/>
 <contactref element="SD_CARD" pad="5"/>
 <contactref element="IC2" pad="14"/>
 <contactref element="R6" pad="2"/>
@@ -5456,13 +5610,13 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="D4_IR">
 <contactref element="VS1838" pad="1"/>
-<contactref element="U$4" pad="4"/>
+<contactref element="IC1" pad="4"/>
 <wire x1="19.05" y1="10.16" x2="20.32" y2="8.89" width="0.254" layer="1"/>
 <wire x1="20.32" y1="8.89" x2="20.32" y2="3.81" width="0.254" layer="1"/>
 <wire x1="20.32" y1="3.81" x2="19.05" y2="2.54" width="0.254" layer="1"/>
 </signal>
 <signal name="N$3">
-<contactref element="U$4" pad="5"/>
+<contactref element="IC1" pad="5"/>
 <contactref element="JP4" pad="2"/>
 <wire x1="21.59" y1="10.16" x2="21.59" y2="7.62" width="0.254" layer="1"/>
 </signal>
@@ -5470,7 +5624,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <contactref element="R3" pad="2"/>
 <contactref element="R2" pad="1"/>
 <contactref element="D4" pad="C"/>
-<contactref element="U$4" pad="15/A1"/>
+<contactref element="IC1" pad="15/A1"/>
 <wire x1="31.75" y1="22.86" x2="29.21" y2="22.86" width="0.254" layer="1"/>
 <wire x1="31.75" y1="22.86" x2="34.29" y2="22.86" width="0.254" layer="1"/>
 <wire x1="34.29" y1="22.86" x2="34.29" y2="25.4" width="0.254" layer="1"/>
@@ -5479,7 +5633,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <contactref element="R5" pad="2"/>
 <contactref element="R4" pad="1"/>
 <contactref element="D2" pad="C"/>
-<contactref element="U$4" pad="16/A2"/>
+<contactref element="IC1" pad="16/A2"/>
 <wire x1="24.13" y1="22.86" x2="21.59" y2="22.86" width="0.254" layer="1"/>
 <wire x1="24.13" y1="22.86" x2="26.67" y2="22.86" width="0.254" layer="1"/>
 <wire x1="30.861" y1="25.3365" x2="31.623" y2="25.3365" width="0.254" layer="1"/>
@@ -5490,7 +5644,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="N$18">
 <contactref element="R1" pad="1"/>
-<contactref element="U$4" pad="0"/>
+<contactref element="IC1" pad="0"/>
 <contactref element="JP3" pad="1"/>
 <wire x1="16.383" y1="20.7645" x2="16.383" y2="22.86" width="0.254" layer="16"/>
 <wire x1="8.763" y1="13.1445" x2="16.383" y2="20.7645" width="0.254" layer="16"/>
@@ -5504,13 +5658,13 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="N$19">
 <contactref element="R9" pad="1"/>
-<contactref element="U$4" pad="1"/>
+<contactref element="IC1" pad="1"/>
 <wire x1="11.43" y1="20.3835" x2="11.43" y2="10.16" width="0.254" layer="1"/>
 <wire x1="13.9065" y1="22.86" x2="11.43" y2="20.3835" width="0.254" layer="1"/>
 <wire x1="13.9065" y1="22.86" x2="13.97" y2="22.86" width="0.254" layer="1"/>
 </signal>
 <signal name="N$20">
-<contactref element="U$4" pad="2"/>
+<contactref element="IC1" pad="2"/>
 <contactref element="JP4" pad="1"/>
 <wire x1="13.97" y1="10.16" x2="13.97" y2="9.525" width="0.254" layer="1"/>
 <wire x1="13.97" y1="9.525" x2="14.605" y2="8.89" width="0.254" layer="1"/>
@@ -5518,18 +5672,18 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="17.78" y1="8.89" x2="19.05" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="N$21">
-<contactref element="U$4" pad="6"/>
+<contactref element="IC1" pad="6"/>
 <contactref element="JP4" pad="3"/>
 <wire x1="24.13" y1="10.16" x2="24.13" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="N$22">
-<contactref element="U$4" pad="7"/>
+<contactref element="IC1" pad="7"/>
 <contactref element="JP4" pad="4"/>
 <wire x1="26.67" y1="10.16" x2="26.67" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="STBY">
-<contactref element="U$4" pad="20/A6"/>
-<contactref element="U$2" pad="13"/>
+<contactref element="IC1" pad="20/A6"/>
+<contactref element="IC4" pad="13"/>
 <wire x1="22.479" y1="25.527" x2="21.717" y2="25.527" width="0.254" layer="1"/>
 <wire x1="23.622" y1="26.67" x2="22.479" y2="25.527" width="0.254" layer="1"/>
 <wire x1="30.48" y1="26.67" x2="23.622" y2="26.67" width="0.254" layer="1"/>
@@ -5537,7 +5691,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="21.717" y1="25.527" x2="21.59" y2="25.4" width="0.254" layer="1"/>
 </signal>
 <signal name="+3V3">
-<contactref element="U$4" pad="3.3V"/>
+<contactref element="IC1" pad="3.3V"/>
 <contactref element="NRF24L01" pad="2"/>
 <contactref element="C4" pad="1"/>
 <wire x1="11.43" y1="22.6695" x2="11.43" y2="25.4" width="0.254" layer="16"/>
@@ -5574,7 +5728,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="SPEED_SENSOR">
 <contactref element="IC2" pad="12"/>
-<contactref element="U$4" pad="3"/>
+<contactref element="IC1" pad="3"/>
 <wire x1="20.3835" y1="5.9055" x2="20.3835" y2="8.255" width="0.254" layer="16"/>
 <wire x1="22.479" y1="3.81" x2="20.3835" y2="5.9055" width="0.254" layer="16"/>
 <wire x1="25.908" y1="3.81" x2="22.479" y2="3.81" width="0.254" layer="16"/>
@@ -5595,7 +5749,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="CSN_SD">
 <contactref element="SD_CARD" pad="1"/>
-<contactref element="U$4" pad="9"/>
+<contactref element="IC1" pad="9"/>
 <wire x1="38.1" y1="2.54" x2="36.83" y2="3.81" width="0.254" layer="1"/>
 <wire x1="36.83" y1="3.81" x2="36.195" y2="3.81" width="0.254" layer="1"/>
 <wire x1="36.195" y1="3.81" x2="35.56" y2="4.445" width="0.254" layer="1"/>
@@ -5608,7 +5762,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="SCK">
 <contactref element="SD_CARD" pad="2"/>
-<contactref element="U$4" pad="14/A0"/>
+<contactref element="IC1" pad="14/A0"/>
 <contactref element="NRF24L01" pad="5"/>
 <wire x1="36.7665" y1="11.811" x2="36.7665" y2="25.3365" width="0.254" layer="1"/>
 <wire x1="35.6235" y1="10.668" x2="36.7665" y2="11.811" width="0.254" layer="1"/>
@@ -5621,7 +5775,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="MOSI">
 <contactref element="SD_CARD" pad="3"/>
-<contactref element="U$4" pad="11"/>
+<contactref element="IC1" pad="11"/>
 <contactref element="NRF24L01" pad="6"/>
 <wire x1="36.83" y1="10.16" x2="36.83" y2="7.62" width="0.254" layer="1"/>
 <wire x1="36.83" y1="7.62" x2="38.1" y2="6.35" width="0.254" layer="1"/>
@@ -5631,7 +5785,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="MISO">
 <contactref element="SD_CARD" pad="4"/>
-<contactref element="U$4" pad="12"/>
+<contactref element="IC1" pad="12"/>
 <contactref element="NRF24L01" pad="7"/>
 <wire x1="39.243" y1="6.096" x2="39.243" y2="5.1435" width="0.254" layer="16"/>
 <wire x1="38.1" y1="7.239" x2="39.243" y2="6.096" width="0.254" layer="16"/>
@@ -5647,12 +5801,12 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="CSN_RADIO">
 <contactref element="NRF24L01" pad="4"/>
-<contactref element="U$4" pad="10"/>
+<contactref element="IC1" pad="10"/>
 <wire x1="34.29" y1="10.16" x2="34.29" y2="7.62" width="0.254" layer="1"/>
 </signal>
 <signal name="CE">
 <contactref element="NRF24L01" pad="3"/>
-<contactref element="U$4" pad="8"/>
+<contactref element="IC1" pad="8"/>
 <wire x1="34.29" y1="5.9055" x2="34.29" y2="5.08" width="0.254" layer="16"/>
 <wire x1="32.9565" y1="7.239" x2="34.29" y2="5.9055" width="0.254" layer="16"/>
 <wire x1="32.9565" y1="8.1915" x2="32.9565" y2="7.239" width="0.254" layer="16"/>
@@ -5662,8 +5816,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="29.337" y1="10.0965" x2="29.21" y2="10.16" width="0.254" layer="16"/>
 </signal>
 <signal name="SDA">
-<contactref element="U$3" pad="4"/>
-<contactref element="U$4" pad="18/A4"/>
+<contactref element="BNO055" pad="4"/>
+<contactref element="IC1" pad="18/A4"/>
 <wire x1="26.67" y1="24.765" x2="26.67" y2="25.4" width="0.254" layer="16"/>
 <wire x1="27.94" y1="23.495" x2="26.67" y2="24.765" width="0.254" layer="16"/>
 <wire x1="27.94" y1="9.525" x2="27.94" y2="23.495" width="0.254" layer="16"/>
@@ -5673,8 +5827,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="30.48" y1="2.54" x2="30.48" y2="8.255" width="0.254" layer="16"/>
 </signal>
 <signal name="SCL">
-<contactref element="U$3" pad="5"/>
-<contactref element="U$4" pad="19/A5"/>
+<contactref element="BNO055" pad="5"/>
+<contactref element="IC1" pad="19/A5"/>
 <wire x1="24.13" y1="24.765" x2="24.13" y2="25.4" width="0.254" layer="16"/>
 <wire x1="25.4" y1="23.495" x2="24.13" y2="24.765" width="0.254" layer="16"/>
 <wire x1="25.4" y1="9.2075" x2="25.4" y2="23.495" width="0.254" layer="16"/>
@@ -5691,8 +5845,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="JP8">
 <contactref element="JP8" pad="1"/>
 <contactref element="R4" pad="2"/>
-<contactref element="U$2" pad="3"/>
-<contactref element="U$2" pad="6"/>
+<contactref element="IC4" pad="3"/>
+<contactref element="IC4" pad="6"/>
 <wire x1="21.5265" y1="13.5255" x2="21.5265" y2="12.7635" width="0.254" layer="1"/>
 <wire x1="13.5255" y1="21.5265" x2="21.5265" y2="13.5255" width="0.254" layer="1"/>
 <wire x1="12.7635" y1="22.2885" x2="13.5255" y2="21.5265" width="0.254" layer="16"/>
@@ -5717,8 +5871,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="ENGINE1">
 <contactref element="JP9" pad="1"/>
-<contactref element="U$2" pad="4"/>
-<contactref element="U$2" pad="5"/>
+<contactref element="IC4" pad="4"/>
+<contactref element="IC4" pad="5"/>
 <wire x1="31.623" y1="40.767" x2="29.337" y2="40.767" width="1.27" layer="1"/>
 <wire x1="29.337" y1="40.767" x2="29.21" y2="40.64" width="1.27" layer="1"/>
 <wire x1="31.623" y1="40.767" x2="31.75" y2="40.64" width="0.254" layer="1"/>
@@ -5727,9 +5881,9 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="44.45" y1="36.83" x2="48.26" y2="40.64" width="1.27" layer="1"/>
 </signal>
 <signal name="IN1">
-<contactref element="U$2" pad="12"/>
-<contactref element="U$2" pad="14"/>
-<contactref element="U$4" pad="23/A9"/>
+<contactref element="IC4" pad="12"/>
+<contactref element="IC4" pad="14"/>
+<contactref element="IC1" pad="23/A9"/>
 <wire x1="14.097" y1="30.2895" x2="14.097" y2="25.527" width="0.254" layer="1"/>
 <wire x1="14.2875" y1="30.48" x2="14.097" y2="30.2895" width="0.254" layer="1"/>
 <wire x1="26.67" y1="30.48" x2="14.2875" y2="30.48" width="0.254" layer="1"/>
@@ -5743,12 +5897,16 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="29.337" y1="28.0035" x2="29.21" y2="27.94" width="0.254" layer="1"/>
 </signal>
 <signal name="IN2">
-<contactref element="U$2" pad="11"/>
-<contactref element="U$2" pad="15"/>
-<contactref element="U$4" pad="22/A8"/>
-<wire x1="16.5735" y1="25.527" x2="16.5735" y2="27.3685" width="0.254" layer="16"/>
-<wire x1="16.5735" y1="27.3685" x2="18.7325" y2="29.5275" width="0.254" layer="16"/>
-<wire x1="18.7325" y1="29.5275" x2="25.0825" y2="29.5275" width="0.254" layer="16"/>
+<contactref element="IC4" pad="11"/>
+<contactref element="IC4" pad="15"/>
+<contactref element="IC1" pad="22/A8"/>
+<wire x1="16.5735" y1="25.527" x2="17.78" y2="26.67" width="0.254" layer="16"/>
+<wire x1="17.78" y1="26.67" x2="20.0025" y2="26.67" width="0.254" layer="16"/>
+<wire x1="20.0025" y1="26.67" x2="20.32" y2="26.9875" width="0.254" layer="16"/>
+<wire x1="20.32" y1="26.9875" x2="20.32" y2="28.6385" width="0.254" layer="16"/>
+<wire x1="20.32" y1="28.6385" x2="20.3835" y2="28.6385" width="0.254" layer="16"/>
+<wire x1="20.3835" y1="28.6385" x2="21.2725" y2="29.5275" width="0.254" layer="16"/>
+<wire x1="21.2725" y1="29.5275" x2="25.0825" y2="29.5275" width="0.254" layer="16"/>
 <wire x1="25.0825" y1="29.5275" x2="26.67" y2="27.94" width="0.254" layer="16"/>
 <wire x1="36.83" y1="27.94" x2="35.2425" y2="29.5275" width="0.254" layer="16"/>
 <wire x1="26.67" y1="27.94" x2="28.2575" y2="29.5275" width="0.254" layer="16"/>
@@ -5757,9 +5915,9 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <wire x1="16.51" y1="25.4635" x2="16.51" y2="25.4" width="0.254" layer="16"/>
 </signal>
 <signal name="PWM">
-<contactref element="U$2" pad="10"/>
-<contactref element="U$2" pad="16"/>
-<contactref element="U$4" pad="21/A7"/>
+<contactref element="IC4" pad="10"/>
+<contactref element="IC4" pad="16"/>
+<contactref element="IC1" pad="21/A7"/>
 <wire x1="20.0025" y1="25.527" x2="19.05" y2="25.527" width="0.254" layer="1"/>
 <wire x1="21.1455" y1="26.67" x2="20.0025" y2="25.527" width="0.254" layer="1"/>
 <wire x1="22.86" y1="26.67" x2="21.1455" y2="26.67" width="0.254" layer="1"/>
@@ -5776,7 +5934,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="N$1">
 <contactref element="D3" pad="C"/>
-<contactref element="U$4" pad="VIN"/>
+<contactref element="IC1" pad="VIN"/>
 <wire x1="7.239" y1="25.3365" x2="6.477" y2="25.3365" width="0.254" layer="1"/>
 <wire x1="9.7155" y1="22.86" x2="7.239" y2="25.3365" width="0.254" layer="1"/>
 <wire x1="10.16" y1="22.86" x2="9.7155" y2="22.86" width="0.254" layer="1"/>
@@ -5785,7 +5943,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <signal name="AGND">
 <contactref element="R3" pad="1"/>
 <contactref element="R5" pad="1"/>
-<contactref element="U$4" pad="AGND"/>
+<contactref element="IC1" pad="AGND"/>
 <wire x1="9.7155" y1="25.3365" x2="8.9535" y2="25.3365" width="0.254" layer="1"/>
 <wire x1="11.049" y1="24.003" x2="9.7155" y2="25.3365" width="0.254" layer="1"/>
 <wire x1="14.478" y1="24.003" x2="11.049" y2="24.003" width="0.254" layer="1"/>
@@ -5802,7 +5960,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 </signal>
 <signal name="N$6">
 <contactref element="JP14" pad="1"/>
-<contactref element="U$4" pad="17/A3"/>
+<contactref element="IC1" pad="17/A3"/>
 <wire x1="29.21" y1="25.4" x2="29.845" y2="25.4" width="0.254" layer="1"/>
 <wire x1="29.845" y1="25.4" x2="31.115" y2="26.67" width="0.254" layer="1"/>
 <wire x1="31.115" y1="26.67" x2="37.465" y2="26.67" width="0.254" layer="1"/>
