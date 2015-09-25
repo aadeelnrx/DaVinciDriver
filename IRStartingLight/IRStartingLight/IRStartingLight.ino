@@ -53,12 +53,13 @@ void loop() {
     Serial.println("Lights ON/OFF");    
   }
   if (stopping == true){
-  }else{
     irsend.sendNEC(0xFF906F, 32);
     Serial.println("STOPPING");    
+    delay(100);
     irsend.sendNEC(0xFF629D, 32);
     Serial.println("Lights ON/OFF");    
+  }else{
   }
-  delay(2000); // otherwise first lines may be missing
+  delay(1000);
 
 }
