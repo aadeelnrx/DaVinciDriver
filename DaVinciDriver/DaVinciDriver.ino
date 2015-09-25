@@ -184,6 +184,7 @@ void translateIR() // takes action based on IR code received
     LOG_SERIAL_LN(" FORWARD");    
     break;
   case 0xFFC23D: 
+    // Race Start
     LOG_SERIAL_LN(" PLAY/PAUSE"); 
     break;
   case 0xFFE01F: 

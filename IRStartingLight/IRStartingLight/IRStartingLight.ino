@@ -18,18 +18,28 @@ An IR LED must be connected to Arduino PWM pin 3.
 #define green_light_PIN 2              // digital 2, interrupt 0
 
 IRsend irsend;
+bool stopping=false;
+bool driving=false;
 
 // Interrupt routine for sending the start signal
 void sendStart(){
-  irsend.sendNEC(0xFFC23D, 24);
-  Serial.println("START");
+  if (digitalRead(green_light_PIN)== LOW) {
+    irsend.sendNEC(0xFFC23D, 32);
+    Serial.println("START");
+    stopping = false;
+    driving = true;
+  }else{
+    irsend.sendNEC(0xFF906F, 32);
+    Serial.println("STOP");
+    stopping = true;
+  }
 }
 
 void setup() {
   pinMode(green_light_PIN, INPUT);
  
   // initialize the serial communication:
-  Serial.begin(115200);
+  Serial.begin(9600);
   delay(1000); // otherwise first lines may be missing
   Serial.println();
 
@@ -38,5 +48,17 @@ void setup() {
 }
 
 void loop() {
+  if (driving == false){
+    irsend.sendNEC(0xFF629D, 32);
+    Serial.println("Lights ON/OFF");    
+  }
+  if (stopping == true){
+  }else{
+    irsend.sendNEC(0xFF906F, 32);
+    Serial.println("STOPPING");    
+    irsend.sendNEC(0xFF629D, 32);
+    Serial.println("Lights ON/OFF");    
+  }
+  delay(2000); // otherwise first lines may be missing
 
 }
