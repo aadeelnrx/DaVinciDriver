@@ -27,7 +27,7 @@
 #define LOG_INTERVAL    100 //75 // mills between entries
 #define ECHO_TO_SERIAL   1 // echo data to serial port
 #define WAIT_TO_START    0 // Wait for serial input in setup()
-#define RADIO_ON         1 // Radio transmission
+#define RADIO_ON         0 // Radio transmission
 #define IR_ON            0 // IR transmission
 #define SD_CARD_ON       0 // Logging to SD card
 
@@ -70,7 +70,7 @@ uint32_t starttime;
 
 // PID Controller
 double PID_setpoint, PID_input, PID_output;
-PID PIDcontroller(&PID_input, &PID_output, &PID_setpoint, 1.5, 5, 0, DIRECT);
+PID PIDcontroller(&PID_input, &PID_output, &PID_setpoint, 1.0, 10, 0, DIRECT);
 
 //RTC_DS1307 RTC; // define the Real Time Clock object
 
@@ -305,14 +305,18 @@ void setup(void)
   pinMode(motor_PWM_PIN, OUTPUT); 
   pinMode(motor_stby_PIN, OUTPUT); 
   
+  digitalWrite(motor_stby_PIN, HIGH);
+  
   // The default SCK pin is connected to the LED which we use for something else
   // Required for Radio/NRF24L01+ and SD-card
   SPI.setSCK(SCK_PIN);
   
+  digitalWrite(green_LED_PIN, HIGH);
+
   // initialize the serial communication:
   Serial.begin(115200);
-  delay(1000); // otherwise first lines may be missing
-  Serial.println();
+  delay(5000); // otherwise first lines may be missing
+  Serial.println("DaVinciDriver");
   
 
 #if WAIT_TO_START
@@ -390,13 +394,16 @@ void setup(void)
   // Setting the frequency on one pin changes it for all other
   // pins on this timer as well (5, 6, 9, 10, 20, 21, 22, 23)
   analogWriteFrequency(motor_In1_PIN, PWM_FREQUENCY);
-  
+Serial.println("Before bno begin");
   if (!bno.begin())
   {
+Serial.println("bno error");
     //There was a problem detecting the BNO055 ... check your connections
     LOG_SDCARD_LN("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!")
     error("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
   }
+Serial.println("After bno begin");
+
   delay(1000);
   bno.setExtCrystalUse(true);  
 
@@ -441,7 +448,7 @@ void setup(void)
   
   // PID
   PID_input = 0.0;
-  PID_setpoint = 80;
+  PID_setpoint = 40;
   PIDcontroller.SetMode(AUTOMATIC);
   
 }
@@ -452,7 +459,7 @@ void setup(void)
 void loop(void)
 {
   // Stop motor after some time
-  if ((millis() - starttime) > 60 * 1000)
+  if ((millis() - starttime) > 600 * 1000)
   {
     motor_off_brake();
     while(1);
