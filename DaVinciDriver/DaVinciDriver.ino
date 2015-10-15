@@ -171,7 +171,8 @@ void translateIR() // takes action based on IR code received
   case 0xFFA25D: 
     LOG_SERIAL_LN(" CH-"); 
     break;
-  case 0xFF629D: 
+  case 0xFF629D:
+    // Lights on/off 
     LOG_SERIAL_LN(" CH");   
     break;
   case 0xFFE21D: 
@@ -194,6 +195,7 @@ void translateIR() // takes action based on IR code received
     LOG_SERIAL_LN(" +");    
     break;
   case 0xFF906F: 
+    // Race Stop
     LOG_SERIAL_LN(" EQ");   
     break;
   case 0xFF6897: 
