@@ -12,7 +12,8 @@
  
  */
 
-#include <SD.h>
+//#include <SD.h>
+#include <SdFat.h>
 #include <IRremote.h>
 #include <Metro.h>
 #include <PID_v1.h>
@@ -30,7 +31,7 @@
 #define WAIT_TO_START    0  // Wait for serial input in setup()
 #define RADIO_ON         1  // Radio transmission
 #define IR_ON            0  // IR transmission
-#define SD_CARD_ON       0  // Logging to SD card
+#define SD_CARD_ON       1  // Logging to SD card
 
 #define STOP_AFTER_SECONDS 120
 
@@ -114,6 +115,12 @@ imu::Quaternion quat;
 
 #if SD_CARD_ON
 File logfile;
+// File system object.
+SdFat SD;
+// Test with reduced SPI speed for breadboards.
+// Change spiSpeed to SPI_FULL_SPEED for better performance
+// Use SPI_QUARTER_SPEED for even slower SPI bus speed
+const uint8_t spiSpeed = SPI_HALF_SPEED;
 #endif
 
 //----------------------------------------------
@@ -414,9 +421,22 @@ void setup(void)
   LOG_SERIAL("Initializing SD card...");
 
   // see if the card is present and can be initialized:
-  if (!SD.begin(CSN_CF_PIN)) {
+  if (!SD.begin(CSN_CF_PIN,spiSpeed)) {
     LOG_SERIAL_LN("Card failed, or not present");
     // don't do anything more:
+    if (SD.card()->errorCode()) {
+      LOG_SERIAL_LN(
+             "\nSD initialization failed.\n"
+             "Do not reformat the card!\n"
+             "Is the card correctly inserted?\n"
+             "Is chipSelect set to the correct value?\n"
+             "Does another SPI device need to be disabled?\n"
+             "Is there a wiring/soldering problem?\n");
+      LOG_SERIAL("\nerrorCode: ");
+      LOG_SERIAL(int(SD.card()->errorCode()));
+      LOG_SERIAL(", errorData: ");
+      LOG_SERIAL_LN(int(SD.card()->errorData()));
+    }
     return;
   }
   LOG_SERIAL_LN("card initialized.");
@@ -464,10 +484,10 @@ void setup(void)
 #endif
 
 #if SD_CARD_ON
-  logfile.println("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");    
+  logfile.println("Millis,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");    
 #endif
 #if ECHO_TO_SERIAL
-  LOG_SERIAL_LN("Millis,Delay,Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");
+  LOG_SERIAL_LN("Millis,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");
 #endif //ECHO_TO_SERIAL 
 
   //attempt to write out the header to the file

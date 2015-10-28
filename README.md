@@ -13,6 +13,6 @@ It is based on:
 Libraries used:
 * [dc740's library](https://forum.pjrc.com/threads/24307-nRF24L01-working-in-Teensy-2-0-and-Teensy-3-0) for NRF24L01:  [download](https://forum.pjrc.com/attachment.php?attachmentid=1002&d=1381184909)
 * Adafruit libraries for BNO055: [download](https://github.com/adafruit/Adafruit_BNO055/archive/master.zip) and [download](https://github.com/adafruit/Adafruit_Sensor/archive/master.zip) (you need both)
-
+* Greiman's SdFat Library: [download](https://github.com/greiman/SdFat)
 
 License: GPL v2.0
