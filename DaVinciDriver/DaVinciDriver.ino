@@ -32,6 +32,7 @@
 #define RADIO_ON         1  // Radio transmission
 #define IR_ON            0  // IR transmission
 #define SD_CARD_ON       1  // Logging to SD card
+#define BNO055_ON        1  // Sensor
 
 #define STOP_AFTER_SECONDS 120
 
@@ -385,6 +386,7 @@ void setup(void)
   }
   LOG_SERIAL_LN("DaVinciDriver");
 
+#if BNO055_ON
   // BNO055 IMU initialisation
   // Done here (4 seconds after serial initialisation) so that
   // we can print to serial here.
@@ -396,7 +398,7 @@ void setup(void)
     error("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
   }
   LOG_SERIAL_LN("After bno begin");
-
+#endif
   // last second: fast blinking
   // The BNO055 needs one second to initialise anyway.
   for (int i=0; i < 10; i++)
@@ -407,9 +409,10 @@ void setup(void)
     delay(50);
   }
   
-  // This has to be done at least one second after bno.begin():
+#if BNO055_ON
+// This has to be done at least one second after bno.begin():
   bno.setExtCrystalUse(true);  
-
+#endif
 
 #if WAIT_TO_START
   Serial.println("Type any character to start");
@@ -563,7 +566,8 @@ void loop(void)
     int trackVoltReading = analogRead(track_volt_PIN);    
     int engineVoltReading = analogRead(engine_volt_PIN);    
   
-    // Read the acceleration and orientation:
+#if BNO055_ON
+// Read the acceleration and orientation:
     bno.getEvent(&accel_orient);
   
     uint32_t dirReading = uint32_t(accel_orient.orientation.x);
@@ -583,7 +587,7 @@ void loop(void)
     euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     quat          = bno.getQuat();
   
-  
+#endif  
 #if IR_ON
     if (irrecv.decode(&results)) // have we received an IR signal?
     {
