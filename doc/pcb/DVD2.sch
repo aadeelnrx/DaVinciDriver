@@ -25039,6 +25039,7 @@ http://www.fairchildsemi.com/ds/LM/LM7805.pdf</description>
 <part name="P+12" library="supply1" deviceset="+5V" device=""/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="D5" library="adafruit" deviceset="1N4004" device=""/>
+<part name="D6" library="adafruit" deviceset="1N4004" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -25235,6 +25236,10 @@ VIN/VREGIN)</text>
 <attribute name="NAME" x="49.53" y="157.9626" size="1.778" layer="95"/>
 <attribute name="VALUE" x="46.228" y="150.8506" size="1.778" layer="96"/>
 </instance>
+<instance part="D6" gate="1" x="30.48" y="142.24" smashed="yes" rot="R270">
+<attribute name="NAME" x="33.5026" y="143.51" size="1.778" layer="95" rot="R270"/>
+<attribute name="VALUE" x="26.3906" y="146.812" size="1.778" layer="96" rot="R270"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -25272,11 +25277,9 @@ VIN/VREGIN)</text>
 <wire x1="12.7" y1="132.08" x2="12.7" y2="134.62" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="134.62" x2="17.78" y2="134.62" width="0.1524" layer="91"/>
 <wire x1="17.78" y1="134.62" x2="30.48" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="147.32" x2="30.48" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="134.62" x2="43.18" y2="134.62" width="0.1524" layer="91"/>
 <junction x="12.7" y="134.62"/>
-<junction x="30.48" y="134.62"/>
 <pinref part="LED1" gate="G$1" pin="C"/>
+<wire x1="30.48" y1="134.62" x2="43.18" y2="134.62" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="134.62" x2="60.96" y2="134.62" width="0.1524" layer="91"/>
 <wire x1="60.96" y1="134.62" x2="73.66" y2="134.62" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="137.16" x2="73.66" y2="134.62" width="0.1524" layer="91"/>
@@ -25294,7 +25297,9 @@ VIN/VREGIN)</text>
 <wire x1="2.54" y1="134.62" x2="2.54" y2="144.78" width="0.1524" layer="91"/>
 <pinref part="JP1" gate="G$1" pin="2"/>
 <wire x1="2.54" y1="144.78" x2="-5.08" y2="144.78" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="A1" pin="GND"/>
+<pinref part="D6" gate="1" pin="C"/>
+<wire x1="30.48" y1="139.7" x2="30.48" y2="134.62" width="0.1524" layer="91"/>
+<junction x="30.48" y="134.62"/>
 </segment>
 <segment>
 <pinref part="GND2" gate="1" pin="GND"/>
@@ -25901,6 +25906,13 @@ VIN/VREGIN)</text>
 <pinref part="D5" gate="1" pin="A"/>
 <wire x1="48.26" y1="154.94" x2="43.18" y2="154.94" width="0.1524" layer="91"/>
 <junction x="43.18" y="154.94"/>
+</segment>
+</net>
+<net name="N$8" class="0">
+<segment>
+<pinref part="IC3" gate="A1" pin="GND"/>
+<pinref part="D6" gate="1" pin="A"/>
+<wire x1="30.48" y1="147.32" x2="30.48" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
