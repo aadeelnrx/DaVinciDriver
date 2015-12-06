@@ -364,7 +364,7 @@ void setup(void)
   PID_input = 0.0;
   PID_setpoint = MOTOR_TARGET_SPEED;
   PIDcontroller.SetMode(AUTOMATIC);
-  PIDcontroller.SetSampleTime(10);
+  PIDcontroller.SetSampleTime(PID_INTERVAL);
   sp1 = sp2 = sp3 = sp4 = 0;    
   
   // The default SCK pin is connected to the LED which we use for something else
