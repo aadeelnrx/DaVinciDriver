@@ -1,3 +1,9 @@
 doc/Thumbs.db
 3rdParty
 datasheets
+*.b#1
+doc/pcb/DVD.l#3
+*.l#2
+*.s#1
+doc/pcb/DVD.l#1
+*.pro

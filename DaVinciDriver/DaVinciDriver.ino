@@ -6,7 +6,7 @@
  
  https://github.com/eedala/DaVinciDriver
 
- Tools -> Board: Teensy 3.1
+ Tools -> Board: Teensy 3.1/3.2
  Tools -> USB Type: Serial
  Tools -> CPU Speed: 72 MHz
  
@@ -346,6 +346,7 @@ void setup(void)
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
   pinMode(CSN_CF_PIN, OUTPUT);
+  pinMode(CSN_Radio_PIN, OUTPUT);
 
   pinMode(CE_Radio_PIN, OUTPUT);
   
@@ -369,6 +370,11 @@ void setup(void)
   // The default SCK pin is connected to the LED which we use for something else
   // Required for Radio/NRF24L01+ and SD-card
   // !!! Must be before SPI.begin() if that is used !!!
+  // In order to make this work, change Line 93 in SdFat/SdSpiTeensy3.cpp from:
+  // CORE_PIN13_CONFIG = PORT_PCR_DSE | PORT_PCR_MUX(2);
+  // to:
+  // CORE_PIN14_CONFIG = PORT_PCR_DSE | PORT_PCR_MUX(2);
+  // CORE_PIN13_CONFIG = PORT_PCR_MUX(1);
   SPI.setSCK(SCK_PIN);
   
   digitalWrite(green_LED_PIN, HIGH);
@@ -520,6 +526,7 @@ void loop(void)
   // Stop motor after some time
   if (millis() >= stoptime)
   {
+    digitalWrite(green_LED_PIN, HIGH);
     motor_off_brake();
     while(1);
   }
@@ -565,12 +572,13 @@ void loop(void)
     // all the time
     int trackVoltReading = analogRead(track_volt_PIN);    
     int engineVoltReading = analogRead(engine_volt_PIN);    
-  
+
+    uint32_t dirReading;
 #if BNO055_ON
 // Read the acceleration and orientation:
     bno.getEvent(&accel_orient);
   
-    uint32_t dirReading = uint32_t(accel_orient.orientation.x);
+    dirReading = uint32_t(accel_orient.orientation.x);
   
     // Possible vector values can be:
     // - VECTOR_ACCELEROMETER - m/s^2
