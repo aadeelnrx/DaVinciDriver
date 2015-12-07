@@ -73,7 +73,7 @@
 #define MOTOR_TARGET_SPEED 28
 #define MOTOR_P 1.5
 #define MOTOR_I 1.0
-#define MOTOR_D 0.1
+#define MOTOR_D 0.0
 
 
 /*-------------------( Global Variables )-----------------------------------*/
@@ -516,6 +516,10 @@ void setup(void)
 
   // Stop the car after some time
   stoptime = millis() + STOP_AFTER_SECONDS * 1000;
+
+  // Reset metro timers so we start at 0
+  pid_timer.reset();
+  measurement_timer.reset();
 }
 
 
