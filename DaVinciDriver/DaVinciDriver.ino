@@ -693,6 +693,12 @@ void loop(void)
    }
 #endif //RADIO_ON
 
+    // Reset pid_timer to avoid overlapping intervals
+    pid_timer.reset();
+    noInterrupts();
+    speedCounter = 0;                 //reset speedCounter 
+    interrupts();
+
     digitalWrite(green_LED_PIN, LOW);
   } // measurement updates
 } 
