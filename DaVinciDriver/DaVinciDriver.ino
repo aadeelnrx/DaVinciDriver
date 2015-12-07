@@ -158,7 +158,7 @@ uint32_t seq_no;
 
 // Wheel encoder, updated by an interrupt routine
 volatile uint32_t speedCounter = 0;
-uint32_t speedReading;
+uint32_t speedReading, speedReadingLogged;
 uint32_t sp, sp1, sp2, sp3, sp4;  // last 4 values of speedReading
 
 //---------------------------------------------------------------
@@ -548,6 +548,7 @@ void loop(void)
     speedCounter = 0;                 //reset speedCounter 
     interrupts();
 
+    speedReadingLogged += speedReading;
     sp = speedReading + sp1 + sp2 + sp3 + sp4;
 
     // Motor also as early as possible to ensure constant update intervals
@@ -646,7 +647,7 @@ void loop(void)
     LOG(quat.y())
     LOG(quat.z())
     
-    LOG(speedReading)
+    LOG(speedReadingLogged)
     LOG(dirReading)
     LOG(trackVoltReading)    
     LOG(engineVoltReading)
@@ -656,6 +657,8 @@ void loop(void)
     logfile.flush();
 #endif
 
+    speedReadingLogged = 0;
+    
 #if RADIO_ON
     seq_no++;
     // If we check here that the packet was sent from the previous loop,
