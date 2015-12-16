@@ -25,16 +25,16 @@
 
 /*-----( Declare Constants and Pin Numbers )-----*/
 
-#define LOG_INTERVAL    100 // mills between logging
-#define PID_INTERVAL     10 // mills between PID updates
+#define LOG_INTERVAL     30 // mills between logging
+#define PID_INTERVAL     30 // mills between PID updates
 #define ECHO_TO_SERIAL   1  // echo data to serial port
 #define WAIT_TO_START    0  // Wait for serial input in setup()
-#define RADIO_ON         1  // Radio transmission
-#define IR_ON            0  // IR transmission
+#define RADIO_ON         0  // Radio transmission
+#define IR_ON            1  // IR transmission
 #define SD_CARD_ON       1  // Logging to SD card
 #define BNO055_ON        1  // Sensor
 
-#define STOP_AFTER_SECONDS 120
+#define STOP_AFTER_SECONDS 130
 
 // the digital pins that connect to the LEDs
 #define red_LED_PIN 13
@@ -70,10 +70,10 @@
 // PWM_FREQUENCY = 1/Tmin
 #define PWM_FREQUENCY  400 // in Hz (guess, I haven't measured R and L)
 
-#define MOTOR_TARGET_SPEED 28
-#define MOTOR_P 1.5
-#define MOTOR_I 1.0
-#define MOTOR_D 0.0
+#define MOTOR_TARGET_SPEED 25
+#define MOTOR_P 0.5 //0.8
+#define MOTOR_I 1.5 //2.5
+#define MOTOR_D 0.01
 
 
 /*-------------------( Global Variables )-----------------------------------*/
@@ -112,6 +112,10 @@ imu::Vector<3> magnometer;
 imu::Vector<3> gyroscope;
 imu::Vector<3> euler;
 imu::Quaternion quat;
+
+int trackVoltReading;
+int dirOverflow = 0;
+uint32_t dirReadingOld;
 
 
 #if SD_CARD_ON
@@ -158,8 +162,55 @@ uint32_t seq_no;
 
 // Wheel encoder, updated by an interrupt routine
 volatile uint32_t speedCounter = 0;
-uint32_t speedReading, speedReadingLogged;
+uint32_t speedReading, speedReadingLogged, distance = 0;
 uint32_t sp, sp1, sp2, sp3, sp4;  // last 4 values of speedReading
+
+// IR button/action
+char irButton[30];
+
+//-----------------------------------------------
+// Records for lap detection and lap segment description
+// Different segment types
+enum SEGMENT_TYPES {
+  STRAIGHT = 0,
+  KURVE_1 = 1,  // tightest
+  KURVE_2 = 2,  // normal
+  KURVE_3 = 3,  // wide
+  KURVE_4 = 4,  // widest
+  SLIDE = 5,    // slide
+};
+
+// Lap segment storage records
+struct lap_segment{
+  uint32_t position;
+  uint32_t length;
+  uint32_t direction;
+  SEGMENT_TYPES segment_type;
+};
+
+// Lap segment detection help records
+struct lap_segment_hist{
+  uint32_t position;
+  uint32_t direction;
+  SEGMENT_TYPES segment_type;
+};
+
+lap_segment_hist lap_hist[5];
+lap_segment lap[1000];
+uint32_t seq_cnt = 0;
+bool measuring = false;
+
+// Lap recognition based on straights help records
+struct straight_type{
+  uint32_t position;
+  uint32_t length;
+  uint32_t direction;  
+};
+
+straight_type straight[100];
+uint32_t straight_cnt = 0;
+bool lap_found = false;
+uint32_t finish_position = 0;
 
 //---------------------------------------------------------------
 // Macros to log data to either serial and/or SD-card.
@@ -217,77 +268,100 @@ void translateIR() // takes action based on IR code received
   {
   case 0xFFA25D: 
     LOG_SERIAL_LN(" CH-"); 
+    strcpy(irButton," CH-");
     break;
   case 0xFF629D:
     // Lights on/off 
     LOG_SERIAL_LN(" CH");   
+    strcpy(irButton," CH");
     break;
   case 0xFFE21D: 
     LOG_SERIAL_LN(" CH+");  
+    strcpy(irButton," CH+");
     break;
   case 0xFF22DD: 
     LOG_SERIAL_LN(" REVERSE");    
+    strcpy(irButton," REVERSE");
     break;
   case 0xFF02FD: 
     LOG_SERIAL_LN(" FORWARD");    
+    strcpy(irButton," FORWARD");
     break;
   case 0xFFC23D: 
     // Race Start
     LOG_SERIAL_LN(" PLAY/PAUSE"); 
+    strcpy(irButton," PLAY/PAUSE");
     break;
   case 0xFFE01F: 
     LOG_SERIAL_LN(" -");    
+    strcpy(irButton," -");
     break;
   case 0xFFA857: 
     LOG_SERIAL_LN(" +");    
+    strcpy(irButton," +");
     break;
   case 0xFF906F: 
     // Race Stop
     LOG_SERIAL_LN(" EQ");   
+    strcpy(irButton," EQ");
     break;
   case 0xFF6897: 
     LOG_SERIAL_LN(" 0");    
+    strcpy(irButton," 0");
     break;
   case 0xFF9867: 
     LOG_SERIAL_LN(" 100+"); 
+    strcpy(irButton," 100+");
     break;
   case 0xFFB04F: 
     LOG_SERIAL_LN(" 200+");   
+    strcpy(irButton," 200+");
     break;
   case 0xFF30CF: 
     LOG_SERIAL_LN(" 1");    
+    strcpy(irButton," 1");
     break;
   case 0xFF18E7: 
     LOG_SERIAL_LN(" 2");    
+    strcpy(irButton," 2");
     break;
   case 0xFF7A85: 
     LOG_SERIAL_LN(" 3");    
+    strcpy(irButton," 3");
     break;
   case 0xFF10EF: 
     LOG_SERIAL_LN(" 4");    
+    strcpy(irButton," 4");
     break;
   case 0xFF38C7: 
     LOG_SERIAL_LN(" 5");    
+    strcpy(irButton," 5");
     break;
   case 0xFF5AA5: 
     LOG_SERIAL_LN(" 6");    
+    strcpy(irButton," 6");
     break;
   case 0xFF42BD: 
     LOG_SERIAL_LN(" 7");    
+    strcpy(irButton," 7");
     break;
   case 0xFF4AB5: 
     LOG_SERIAL_LN(" 8");    
+    strcpy(irButton," 8");
     break;
   case 0xFF52AD: 
     LOG_SERIAL_LN(" 9");    
+    strcpy(irButton," 9");
     break;
   case 0xFFFFFFFF: 
     LOG_SERIAL_LN(" REPEAT"); 
+    strcpy(irButton," REPEAT");
     break;  
 
   default: 
     LOG_SERIAL(" other button   :");
     LOG_SERIAL_LN2(results.value, HEX);
+    strcpy(irButton," other button   :");
   }// End Case
 } //END translateIR
 #endif
@@ -362,7 +436,7 @@ void setup(void)
   
   // PID
   PID_input = 0.0;
-  PID_setpoint = MOTOR_TARGET_SPEED;
+  PID_setpoint = MOTOR_TARGET_SPEED * PID_INTERVAL / 10 ;
   PIDcontroller.SetMode(AUTOMATIC);
   PIDcontroller.SetSampleTime(PID_INTERVAL);
   sp1 = sp2 = sp3 = sp4 = 0;    
@@ -493,10 +567,10 @@ void setup(void)
 #endif
 
 #if SD_CARD_ON
-  logfile.println("Millis,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");    
+  logfile.println("Millis,Ex Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Distance,Direction,VoltageIn,VoltageEngine,sp1,sp2,sp3,sp4,SR,PID_In,PID_Out,P,I,D,IR,Seq,Pos,l,dir,ST,dirChange");    
 #endif
 #if ECHO_TO_SERIAL
-  LOG_SERIAL_LN("Millis,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Direction,VoltageIn,VoltageEngine");
+  LOG_SERIAL_LN("Millis,Ex Time,Ori.x,Ori.y,Ori.z,Acc.x,Acc.y,Acc.z,LAcc.x,LAcc.y,LAcc.z,Grav.x,Grav.y,Grav.z,Mag.x,Mag.y,Mag.z,Gyro.x,Gyro.y,Gyro.z,Euler.x,Euler.y,Euler.z,Quat.w,Quat.x,Quat.y,Quat.z,Speed,Distance,Direction,VoltageIn,VoltageEngine,sp1,sp2,sp3,sp4,SR,PID_In,PID_Out,P,I,D,IR,Seq,Pos,l,dir,ST,dirChange");
 #endif //ECHO_TO_SERIAL 
 
   //attempt to write out the header to the file
@@ -526,7 +600,7 @@ void setup(void)
 //====================================================================
 //====================================================================
 void loop(void)
-{
+{  
   // Stop motor after some time
   if (millis() >= stoptime)
   {
@@ -534,37 +608,15 @@ void loop(void)
     motor_off_brake();
     while(1);
   }
-  
-  // Higher frequency timer for the PID controller
-  if (pid_timer.check())
+
+  // Stop motor at start/finish straight after lap detection has finished
+  if (distance >= (2*finish_position))
   {
     digitalWrite(green_LED_PIN, HIGH);
-    
-    // Take all measurement values right at the beginning of the
-    // main loop to ensure taking them after the same interval
-    // all the time
-    noInterrupts();
-    speedReading = speedCounter;  //calculate speed based on speedCounter
-    speedCounter = 0;                 //reset speedCounter 
-    interrupts();
-
-    speedReadingLogged += speedReading;
-    sp = speedReading + sp1 + sp2 + sp3 + sp4;
-
-    // Motor also as early as possible to ensure constant update intervals
-    PID_input = (float)sp;
-    PIDcontroller.Compute();
-    motor_on_pwm(PID_output);
-
-    // update history:
-    sp1 = sp2;
-    sp2 = sp3;
-    sp3 = sp4;
-    sp4 = speedReading;
-
-    digitalWrite(green_LED_PIN, LOW);  
+    motor_off_brake();
+    while(1);
   }
-  
+    
   if (measurement_timer.check())
   {
     digitalWrite(green_LED_PIN, HIGH);
@@ -575,15 +627,125 @@ void loop(void)
     // Take all measurement values right at the beginning of the
     // main loop to ensure taking them after the same interval
     // all the time
-    int trackVoltReading = analogRead(track_volt_PIN);    
+    trackVoltReading = analogRead(track_volt_PIN);    
     int engineVoltReading = analogRead(engine_volt_PIN);    
 
-    uint32_t dirReading;
+    noInterrupts();
+    speedReading = speedCounter;  //calculate speed based on speedCounter
+    speedCounter = 0;                 //reset speedCounter 
+    interrupts();
+
+    speedReadingLogged += speedReading;
+    distance += speedReading;
+    sp = speedReading + sp1 + sp2 + sp3 + sp4;
+
+    // Motor also as early as possible to ensure constant update intervals
+    PID_input = (float)sp;
+//    if ((trackVoltReading = 0)&&(speedCounter = 0))
+//    {
+//      PID_output = 0;
+//    }
+    PIDcontroller.Compute();
+    motor_on_pwm(PID_output);
+
+    int32_t dirReading;
+    float dirChange;
 #if BNO055_ON
-// Read the acceleration and orientation:
+    // Read the acceleration and orientation:
     bno.getEvent(&accel_orient);
-  
+
     dirReading = uint32_t(accel_orient.orientation.x);
+
+    // Start measuring after BNO055 starts giving real values
+    if ((dirReading > 0)&&(measuring == false))
+    {
+      measuring = true;
+      lap[seq_cnt].position = 0;
+      lap[seq_cnt].direction = dirReading;
+      lap[seq_cnt].segment_type = STRAIGHT;
+      seq_cnt++;
+      for (int i=0; i < 4; i++)
+      {
+        lap_hist[i+1].position = 0;
+        lap_hist[i+1].direction = dirReading;
+        lap_hist[i+1].segment_type = STRAIGHT;          
+      }        
+    }
+    // Measuring whenever the direction changes
+    if (measuring == true)
+    {
+      if ( (dirReading - lap[seq_cnt-1].direction) > 1)
+      {
+        // rotate history of last 5 measurements (FIFO)
+        for (int i=3; i >= 0 ; i--)
+        {
+          lap_hist[i+1].position = lap_hist[i].position;
+          lap_hist[i+1].direction = lap_hist[i].direction;
+          lap_hist[i+1].segment_type = lap_hist[i].segment_type;          
+        }        
+        // store current measurement
+        lap_hist[0].position = distance;
+        lap_hist[0].direction = dirReading;
+        // determine the relative direction change during the last 5 measurements (to smoothen the measurement result curve)
+        dirChange = (((float)abs(dirReading - lap_hist[4].direction))/(float)(distance -lap_hist[4].position));
+        if (dirChange < 0.05)
+        { 
+          lap_hist[0].segment_type = STRAIGHT;
+        }else if (dirChange < 0.087)
+        { 
+          lap_hist[0].segment_type = KURVE_4;
+        }else if (dirChange < 0.125)
+        { 
+          lap_hist[0].segment_type = KURVE_3;
+        }else if (dirChange < 0.25)
+        { 
+          lap_hist[0].segment_type = KURVE_2;
+        }else if (dirChange < 0.5)
+        { 
+          lap_hist[0].segment_type = KURVE_1;
+        }else
+        { 
+          lap_hist[0].segment_type = SLIDE;
+        }   
+
+        // Create new lap_segment in case direction has changed in the last 3 measurements (to avoid short peeks/drops)
+        if ((lap_hist[0].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[1].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[2].segment_type != lap[seq_cnt-1].segment_type))
+        {
+          lap[seq_cnt].position = lap_hist[2].position;
+          lap[seq_cnt-1].length = lap[seq_cnt].position - lap[seq_cnt-1].position;
+          lap[seq_cnt].direction = lap_hist[2].direction;
+          lap[seq_cnt].segment_type = lap_hist[2].segment_type;
+          seq_cnt++;
+          // If new lap segment is a straight, store a new straight and do lap recognition based on the straights
+          if (lap[seq_cnt-2].segment_type == STRAIGHT)
+          {
+            straight[straight_cnt].position = lap[seq_cnt-2].position;
+            straight[straight_cnt].length = lap[seq_cnt-2].length;
+            straight[straight_cnt].direction = lap[seq_cnt-2].direction;
+            // check if new straight has been driven/measured before
+            for (int i=0; i < straight_cnt; i++)
+            {
+              if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 6)&&(abs(straight[i].length - straight[straight_cnt].length) < 35))
+              {
+                lap_found = true; 
+                finish_position = straight[straight_cnt].position - straight[i].position;
+              }
+            }
+            straight_cnt++;
+          }        
+        }
+      }
+    }
+    if ((dirReadingOld > 350)&& (dirReading <10))
+    {
+      dirOverflow += 360;
+    }
+    if ((dirReadingOld < 10)&& (dirReading >350))
+    {
+      dirOverflow -= 360;
+    }
+    dirReadingOld = dirReading;
+    dirReading += dirOverflow;  
   
     // Possible vector values can be:
     // - VECTOR_ACCELEROMETER - m/s^2
@@ -610,9 +772,12 @@ void loop(void)
     }  
 #endif
 
-  
+    // Log execution time in milliseconds
+    uint32_t execution_time_msec = millis() - msec_since_start;
+
     // Log measurements to serial and/or flash:
     LOG(msec_since_start)
+    LOG(execution_time_msec)
     
     LOG(accel_orient.orientation.x)
     LOG(accel_orient.orientation.y)
@@ -648,9 +813,44 @@ void loop(void)
     LOG(quat.z())
     
     LOG(speedReadingLogged)
+    LOG(distance)
     LOG(dirReading)
     LOG(trackVoltReading)    
     LOG(engineVoltReading)
+
+    LOG(sp1)
+    LOG(sp2)
+    LOG(sp3)
+    LOG(sp4)
+    LOG(speedReading)
+
+    LOG(PID_input)
+    LOG(PID_output)
+    LOG(MOTOR_P)
+    LOG(MOTOR_I)
+    LOG(MOTOR_D)
+
+#if IR_ON
+    LOG(irButton)
+    strcpy(irButton,"");
+#endif
+
+    if (seq_cnt > 1)
+    {
+      LOG(seq_cnt-1)
+      LOG(lap[seq_cnt-1].position)
+      LOG(lap[seq_cnt-2].length)
+      LOG(lap[seq_cnt-1].direction)
+      LOG(lap[seq_cnt-1].segment_type)
+      LOG(dirChange)
+      LOG(straight_cnt)
+      LOG(lap_found)
+      LOG(finish_position)
+    }else
+    {
+      LOG(seq_cnt);
+    }
+    
     LOG_LN()
     
 #if SD_CARD_ON
@@ -693,11 +893,11 @@ void loop(void)
    }
 #endif //RADIO_ON
 
-    // Reset pid_timer to avoid overlapping intervals
-    pid_timer.reset();
-    noInterrupts();
-    speedCounter = 0;                 //reset speedCounter 
-    interrupts();
+    // update history:
+    sp1 = sp2;
+    sp2 = sp3;
+    sp3 = sp4;
+    sp4 = speedReading;
 
     digitalWrite(green_LED_PIN, LOW);
   } // measurement updates
