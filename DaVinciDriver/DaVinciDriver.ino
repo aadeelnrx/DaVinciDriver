@@ -25,8 +25,8 @@
 
 /*-----( Declare Constants and Pin Numbers )-----*/
 
-#define LOG_INTERVAL     30 // mills between logging
-#define PID_INTERVAL     30 // mills between PID updates
+#define LOG_INTERVAL     10 // mills between logging
+#define PID_INTERVAL     10 // mills between PID updates
 #define ECHO_TO_SERIAL   1  // echo data to serial port
 #define WAIT_TO_START    0  // Wait for serial input in setup()
 #define RADIO_ON         0  // Radio transmission
@@ -73,8 +73,8 @@
 #define PWM_FREQUENCY  400 // in Hz (guess, I haven't measured R and L)
 
 #define MOTOR_TARGET_SPEED 25
-#define MOTOR_P 0.5 //0.8
-#define MOTOR_I 1.5 //2.5
+#define MOTOR_P 0.8
+#define MOTOR_I 2.5
 #define MOTOR_D 0.01
 
 
@@ -197,7 +197,7 @@ struct lap_segment_hist{
   SEGMENT_TYPES segment_type;
 };
 
-lap_segment_hist lap_hist[5];
+lap_segment_hist lap_hist[10];
 lap_segment lap[1000];
 uint32_t seq_cnt = 0;
 bool measuring = false;
@@ -666,7 +666,7 @@ void loop(void)
       lap[seq_cnt].direction = dirReading;
       lap[seq_cnt].segment_type = STRAIGHT;
       seq_cnt++;
-      for (int i=0; i < 4; i++)
+      for (int i=0; i < 9; i++)
       {
         lap_hist[i+1].position = 0;
         lap_hist[i+1].direction = dirReading;
@@ -678,8 +678,8 @@ void loop(void)
     {
       if ( (dirReading - lap[seq_cnt-1].direction) > 1)
       {
-        // rotate history of last 5 measurements (FIFO)
-        for (int i=3; i >= 0 ; i--)
+        // rotate history of last 10 measurements (FIFO)
+        for (int i=8; i >= 0 ; i--)
         {
           lap_hist[i+1].position = lap_hist[i].position;
           lap_hist[i+1].direction = lap_hist[i].direction;
@@ -688,8 +688,8 @@ void loop(void)
         // store current measurement
         lap_hist[0].position = distance;
         lap_hist[0].direction = dirReading;
-        // determine the relative direction change during the last 5 measurements (to smoothen the measurement result curve)
-        dirChange = (((float)abs(dirReading - lap_hist[4].direction))/(float)(distance -lap_hist[4].position));
+        // determine the relative direction change during the last 10 measurements (to smoothen the measurement result curve)
+        dirChange = (((float)abs(dirReading - lap_hist[9].direction))/(float)(distance -lap_hist[9].position));
         if (dirChange < 0.05)
         { 
           lap_hist[0].segment_type = STRAIGHT;
@@ -727,7 +727,7 @@ void loop(void)
             // check if new straight has been driven/measured before
             for (int i=0; i < straight_cnt; i++)
             {
-              if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 6)&&(abs(straight[i].length - straight[straight_cnt].length) < 35))
+              if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 8)&&(abs(straight[i].length - straight[straight_cnt].length) < 40))
               {
                 lap_found = true; 
                 finish_position = straight[straight_cnt].position - straight[i].position;
