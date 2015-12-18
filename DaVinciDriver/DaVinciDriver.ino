@@ -32,7 +32,9 @@
 #define RADIO_ON         0  // Radio transmission
 #define IR_ON            1  // IR transmission
 #define SD_CARD_ON       1  // Logging to SD card
+#define TEST_LOGGING_ON  0  //
 #define BNO055_ON        1  // Sensor
+#define BNO055_TEST_ON   0  // Extended Sensor reading only valid with BNO055_ON
 
 #define STOP_AFTER_SECONDS 130
 
@@ -746,7 +748,9 @@ void loop(void)
     }
     dirReadingOld = dirReading;
     dirReading += dirOverflow;  
+#endif  
   
+#if BNO055_TEST_ON
     // Possible vector values can be:
     // - VECTOR_ACCELEROMETER - m/s^2
     // - VECTOR_MAGNETOMETER  - uT
@@ -779,6 +783,7 @@ void loop(void)
     LOG(msec_since_start)
     LOG(execution_time_msec)
     
+#if TEST_LOGGING_ON
     LOG(accel_orient.orientation.x)
     LOG(accel_orient.orientation.y)
     LOG(accel_orient.orientation.z)
@@ -811,6 +816,7 @@ void loop(void)
     LOG(quat.x())
     LOG(quat.y())
     LOG(quat.z())
+#endif
     
     LOG(speedReadingLogged)
     LOG(distance)
