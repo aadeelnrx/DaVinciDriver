@@ -610,7 +610,7 @@ void loop(void)
   }
 
   // Stop motor at start/finish straight after lap detection has finished
-  if (distance >= (2*finish_position))
+  if ((finish_position > 0) && (distance >= (2*finish_position)))
   {
     digitalWrite(green_LED_PIN, HIGH);
     motor_off_brake();
@@ -761,8 +761,8 @@ void loop(void)
     gyroscope     = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
     euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     quat          = bno.getQuat();
-  
 #endif  
+  
 #if IR_ON
     if (irrecv.decode(&results)) // have we received an IR signal?
     {
