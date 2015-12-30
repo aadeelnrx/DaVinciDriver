@@ -29,9 +29,9 @@
 #define PID_INTERVAL     30 // mills between PID updates
 #define ECHO_TO_SERIAL   1  // echo data to serial port
 #define WAIT_TO_START    0  // Wait for serial input in setup()
-#define RADIO_ON         0  // Radio transmission
-#define IR_ON            1  // IR transmission
-#define SD_CARD_ON       1  // Logging to SD card
+#define RADIO_ON         1  // Radio transmission
+#define IR_ON            0  // IR transmission
+#define SD_CARD_ON       0  // Logging to SD card
 #define BNO055_ON        1  // Sensor
 
 #define STOP_AFTER_SECONDS 130
@@ -131,13 +131,30 @@ const uint8_t spiSpeed = SPI_HALF_SPEED;
 //----------------------------------------------
 // Structure of our telemetry messages
 // !!! Max. length is 28 bytes !!!
-// sizeof(uint32_t) = 4 bytes
-enum MSG_TYPES {
+// sizeof(uint32_t) = 4 bytes --> 7x uint32_t
+enum MSG_TYPES
+{
   MSG_MEASUREMENT = 0,
-  MSG_TEXT = 1,
+  MSG_TEXT,
+  MSG_TRACK,
 };
 
-struct measurement_t{
+struct msg_track_t
+{
+  uint32_t seq_no;
+  uint16_t seq;
+  uint16_t position;
+  uint16_t length;
+  uint16_t direction;
+  uint16_t segment_type;
+  uint16_t dirChange;
+  uint16_t straight_cnt;
+  uint16_t lap_found;
+  uint16_t finish_position;
+};
+
+struct measurement_t
+{
   uint32_t seq_no;
   uint32_t millis;
   uint32_t speed;
@@ -145,10 +162,13 @@ struct measurement_t{
   uint32_t voltage;
 };
 
-struct message_t {
+struct message_t
+{
   MSG_TYPES msg_type;  // 0 = measurement, 1 = text
-  union {
+  union
+  {
     measurement_t measurement;
+    msg_track_t track;
     char text[20];
   } msg;
 };
@@ -649,7 +669,7 @@ void loop(void)
     motor_on_pwm(PID_output);
 
     int32_t dirReading;
-    float dirChange;
+    float dirChange = 0.0;
 #if BNO055_ON
     // Read the acceleration and orientation:
     bno.getEvent(&accel_orient);
@@ -723,7 +743,7 @@ void loop(void)
             straight[straight_cnt].length = lap[seq_cnt-2].length;
             straight[straight_cnt].direction = lap[seq_cnt-2].direction;
             // check if new straight has been driven/measured before
-            for (int i=0; i < straight_cnt; i++)
+            for (uint32_t i=0; i < straight_cnt; i++)
             {
               if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 6)&&(abs(straight[i].length - straight[straight_cnt].length) < 35))
               {
@@ -867,13 +887,27 @@ void loop(void)
   //  if (seq_no > 1) radio.waitPacketSent();
  
     // Construct the message we'll send
-    message.msg_type = MSG_MEASUREMENT;
-    message.msg.measurement = (measurement_t){seq_no, msec_since_start, speedReading, dirReading, sp /*trackVoltReading*/};
+    //message.msg_type = MSG_MEASUREMENT;
+    //message.msg.measurement = (measurement_t){seq_no, msec_since_start, speedReading, dirReading, sp /*trackVoltReading*/};
   
-    LOG_SERIAL_LN(F("Transmitting on radio"));
-    radio.send((uint8_t *)&message, sizeof(message_t));
-    radio.waitPacketSent();
- 
+    if (seq_cnt > 1)
+    {
+      message.msg_type = MSG_TRACK;
+      message.msg.track = (msg_track_t){seq_no,
+                                              (uint16_t)(seq_cnt-1),
+                                              (uint16_t)lap[seq_cnt-1].position,
+                                              (uint16_t)lap[seq_cnt-2].length,
+                                              (uint16_t)lap[seq_cnt-1].direction,
+                                              (uint16_t)lap[seq_cnt-1].segment_type,
+                                              (uint16_t)(100 * dirChange),
+                                              (uint16_t)straight_cnt,
+                                              (uint16_t)lap_found,
+                                              (uint16_t)finish_position};
+  
+      LOG_SERIAL_LN(F("Transmitting on radio"));
+      radio.send((uint8_t *)&message, sizeof(message_t));
+      radio.waitPacketSent();
+    } 
     // Did we receive something from the PC? 
     uint8_t buf[RH_NRF24_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
