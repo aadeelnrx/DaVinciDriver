@@ -1,7 +1,7 @@
 #pragma once
 //----------------------( Enable Features )------------------------
 
-#define ECHO_TO_SERIAL   1  // echo data to serial port
+#define ECHO_TO_SERIAL   0  // echo data to serial port
 #define WAIT_TO_START    0  // Wait for serial input in setup()
 #define RADIO_ON         0  // Radio transmission
 #define SD_CARD_ON       0  // Logging to SD card
@@ -11,8 +11,8 @@
 
 //----------------------( Declare Constants )------------------------
 
-#define LOG_INTERVAL     10 // mills between logging
-#define PID_INTERVAL     10 // mills between PID updates
+#define LOG_INTERVAL     20 // mills between logging
+#define PID_INTERVAL     20 // mills between PID updates
 #define STOP_AFTER_SECONDS 130
 
 
@@ -47,10 +47,11 @@
 // Choose a minimum duty cycle (dc = 1..100).
 // Tmin = 100/dc * 5 * Tc
 // PWM_FREQUENCY = 1/Tmin
-#define PWM_FREQUENCY  400 // in Hz (guess, I haven't measured R and L)
+#define PWM_FREQUENCY  100 // in Hz (guess, I haven't measured R and L)
 
 // PID parameters for motor
-#define MOTOR_TARGET_SPEED 25
+// TARGET_SPEED is accumulated over 5 measurements => divide it by 5 to get real speed
+#define MOTOR_TARGET_SPEED 20*4
 #define MOTOR_P 0.8
 #define MOTOR_I 2.5
 #define MOTOR_D 0.01

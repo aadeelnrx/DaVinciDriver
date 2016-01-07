@@ -11,7 +11,7 @@ void motor_init()
   pinMode(motor_PWM_PIN, OUTPUT); 
   pinMode(motor_STBY_PIN, OUTPUT); 
   digitalWrite(motor_STBY_PIN, HIGH);
-  // Set PWM frequency.  The motor diver can handle 100 kHz max.
+  // Set PWM frequency.  The motor driver can handle 100 kHz max.
   // Setting the frequency on one pin changes it for all other
   // pins on this timer as well (5, 6, 9, 10, 20, 21, 22, 23)
   analogWriteFrequency(motor_In1_PIN, PWM_FREQUENCY);
@@ -41,6 +41,7 @@ void motor_on_pwm(int dutycycle)
 // Motor off, coasting:
 void motor_off_coast()
 {
+  analogWrite(motor_In1_PIN, 0);
   digitalWrite(motor_In1_PIN, LOW);
   digitalWrite(motor_In2_PIN, LOW);
   digitalWrite(motor_PWM_PIN, HIGH);
