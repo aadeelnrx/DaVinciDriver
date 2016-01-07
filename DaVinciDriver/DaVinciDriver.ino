@@ -439,9 +439,9 @@ void motor_on_pwm(int dutycycle)
 
 //------------------------------------------------------------------------
 // Motor off, coasting:
-// needs to be fixed!!!!!
 void motor_off_coast()
 {
+  analogWrite(motor_In1_PIN, 0);
   digitalWrite(motor_In1_PIN, LOW);
   digitalWrite(motor_In2_PIN, LOW);
   digitalWrite(motor_PWM_PIN, HIGH);
