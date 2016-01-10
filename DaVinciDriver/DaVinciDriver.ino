@@ -74,15 +74,15 @@
 #define PWM_FREQUENCY  100 // in Hz (guess, I haven't measured R and L)
 
 // Learning Lap(s) PID and speed definition  
-#define MOTOR_TARGET_SPEED 20
+#define MOTOR_TARGET_SPEED 25
 #define MOTOR_M_P 2.5
 #define MOTOR_M_I 5
 #define MOTOR_M_D 0.00
 
 // Racing Laps PID definition
-#define MOTOR_R_P 30 //20
+#define MOTOR_R_P 10 //30 //20
 #define MOTOR_R_I 1
-#define MOTOR_R_D 1.00
+#define MOTOR_R_D 0.00
 
 /*-------------------( Global Variables )-----------------------------------*/
 // When to stop the car so that it doesn't drive endlessly during test:
@@ -139,9 +139,9 @@ SdFat SD;
 // Test with reduced SPI speed for breadboards.
 // Change spiSpeed to SPI_FULL_SPEED for better performance
 // Use SPI_QUARTER_SPEED for even slower SPI bus speed
-//const uint8_t spiSpeed = SPI_FULL_SPEED;
+const uint8_t spiSpeed = SPI_FULL_SPEED;
 //const uint8_t spiSpeed = SPI_HALF_SPEED;
-const uint8_t spiSpeed = SPI_QUARTER_SPEED;
+//const uint8_t spiSpeed = SPI_QUARTER_SPEED;
 #endif
 
 // Wheel encoder, updated by an interrupt routine
@@ -891,7 +891,21 @@ void loop(void)
     // Measuring whenever the direction changes once the BNO has started up
     if (measuring == true)
     {
-      if ( (dirReading - lap[seq_cnt-1].direction) > 1)
+
+      // still needs fixing
+      dirOverflow = 0;
+      if ((lap[seq_cnt-1].direction > 270) && (dirReadingOld >= lap[seq_cnt-1].direction) && (dirReading <90))
+      {
+        dirOverflow = 360;
+      }
+      if ((lap[seq_cnt-1].direction < 90) && (dirReadingOld <= lap[seq_cnt-1].direction) && (dirReading >270))
+      {
+        dirOverflow = -360;
+      }
+      dirReading += dirOverflow;  
+      dirReadingOld = dirReading;
+
+      if ( abs(dirReading - lap[seq_cnt-1].direction) > 1)
       {
         // rotate history of last 10 measurements (FIFO)
         for (int i=8; i >= 0 ; i--)
@@ -935,6 +949,14 @@ void loop(void)
         // Create new lap_segment in case direction has changed in the last 6 measurements (to avoid short peeks/drops)
         if ((lap_hist[0].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[1].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[2].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[3].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[4].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[5].segment_type != lap[seq_cnt-1].segment_type))
         {
+          // In case of dirOverflow reverse the dirOverflow change done
+          if (dirOverflow != 0)
+          {
+            for (int i=0; i < 9; i++)
+            {
+              lap_hist[i].direction -= dirOverflow;
+            }        
+          }
           lap[seq_cnt].position = lap_hist[5].position;                             // set starting position of next segment
           lap[seq_cnt-1].length = lap[seq_cnt].position - lap[seq_cnt-1].position;  // calculate and set length of last segment
           lap[seq_cnt].direction = lap_hist[5].direction;                           // set other values of next segment
@@ -976,18 +998,6 @@ void loop(void)
         }
       }
     }
-    
-    // still needs fixing
-    if ((dirReadingOld > 350)&& (dirReading <10))
-    {
-      dirOverflow += 360;
-    }
-    if ((dirReadingOld < 10)&& (dirReading >350))
-    {
-      dirOverflow -= 360;
-    }
-    dirReadingOld = dirReading;
-    dirReading += dirOverflow;  
 #endif  
   
 #if BNO055_TEST_ON
@@ -1191,17 +1201,6 @@ void loop(void)
 
     dirReading = uint32_t(accel_orient.orientation.x);
      
-    // still needs fixing
-    if ((dirReadingOld > 350)&& (dirReading <10))
-    {
-      dirOverflow += 360;
-    }
-    if ((dirReadingOld < 10)&& (dirReading >350))
-    {
-      dirOverflow -= 360;
-    }
-    dirReadingOld = dirReading;
-    dirReading += dirOverflow;  
 #endif  
  
 #if IR_ON
