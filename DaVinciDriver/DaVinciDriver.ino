@@ -12,7 +12,10 @@
  
  */
 
-//#include <SD.h>
+#include "PinsParameters.h"
+#include "Logging.h"
+#include "Motor.h"
+#include "Telemetry.h"
 #include <SdFat.h>
 #include <IRremote.h>
 #include <Metro.h>
@@ -23,66 +26,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 
-/*-----( Declare Constants and Pin Numbers )-----*/
 
-#define LOG_INTERVAL     10 // mills between logging
-#define PID_INTERVAL     10 // mills between PID updates
-#define RACING_INTERVAL  10 // mills between PID updates
-#define ECHO_TO_SERIAL   1  // echo data to serial port
-#define WAIT_TO_START    0  // Wait for serial input in setup()
-#define RADIO_ON         0  // Radio transmission
-#define IR_ON            1  // IR transmission
-#define SD_CARD_ON       1  // Logging to SD card
-#define TEST_LOGGING_ON  0  //
-#define BNO055_ON        1  // Sensor
-#define BNO055_TEST_ON   0  // Extended Sensor reading only valid with BNO055_ON
-
-#define STOP_AFTER_SECONDS 130
-
-// the digital pins that connect to the LEDs
-#define red_LED_PIN 13
-#define green_LED_PIN 13
-
-// The pins that connect to the sensors
-#define speed_PIN 3              // digital 3, interrupt 0
-#define track_volt_PIN A1        // analog 1
-#define engine_volt_PIN A2       // analog 2
-
-// The SPI pins for CF and Radio
-#define CE_Radio_PIN   8
-#define CSN_Radio_PIN 10
-#define SCK_PIN 14   // SPI bus uses pin 14 instead of pin 13 (used for LED)
-#define CSN_CF_PIN 9
-
-// The IR receiver digital pin
-#define IR_receiver 4
-
-// Motor driver interface (PWM on these pins uses timer 0):
-#define motor_In1_PIN 23
-#define motor_In2_PIN 22
-#define motor_PWM_PIN 21
-#define motor_STBY_PIN 20
-
-// Motor PWM Frequency
-// To calculate you need R and L of the motor.
-// First the time constant (Tc) of the motor:
-// Tc = L/R
-// In 5*Tc the motor current has risen to 98.2%.
-// Choose a minimum duty cycle (dc = 1..100).
-// Tmin = 100/dc * 5 * Tc
-// PWM_FREQUENCY = 1/Tmin
-#define PWM_FREQUENCY  100 // in Hz (guess, I haven't measured R and L)
-
-// Learning Lap(s) PID and speed definition  
-#define MOTOR_TARGET_SPEED 25
-#define MOTOR_M_P 2.5
-#define MOTOR_M_I 5
-#define MOTOR_M_D 0.00
-
-// Racing Laps PID definition
-#define MOTOR_R_P 10 //30 //20
-#define MOTOR_R_I 1
-#define MOTOR_R_D 0.00
 
 /*-------------------( Global Variables )-----------------------------------*/
 // When to stop the car so that it doesn't drive endlessly during test:
@@ -100,11 +44,6 @@ PID PIDcontroller(&PID_input, &PID_output, &PID_setpoint, MOTOR_M_P, MOTOR_M_I, 
 // Variables for ASR defining the maximum PWM change
 double PID_output_maximized,PID_output_maximized_old = 0;
 double PID_max_change = 25;
-
-//RTC_DS1307 RTC; // define the Real Time Clock object
-
-// Set up nRF24L01 radio on SPI bus
-RH_NRF24 radio(CE_Radio_PIN, CSN_Radio_PIN);
 
 // Acceleration and orientation
 sensors_event_t accel_orient;
@@ -144,6 +83,15 @@ const uint8_t spiSpeed = SPI_FULL_SPEED;
 //const uint8_t spiSpeed = SPI_QUARTER_SPEED;
 #endif
 
+// Telemetry
+#if RADIO_ON
+  message_t message;
+  measurement_t measurement;
+  uint32_t seq_no = 0;
+  // Set up nRF24L01 radio on SPI bus
+  Telemetry telemetry(CE_Radio_PIN, CSN_Radio_PIN);
+#endif //RADIO_ON
+
 // Wheel encoder, updated by an interrupt routine
 volatile uint32_t speedCounter = 0;
 uint32_t speedReading, speedReadingLogged, distance = 0;
@@ -152,30 +100,7 @@ uint32_t sp, sp1, sp2, sp3, sp4;  // last 4 values of speedReading
 // IR button/action
 char irButton[30];
 
-//----------------------------------------------
-// Structure of NRF telemetry messages
-// !!! Max. length is 28 bytes !!!
-// sizeof(uint32_t) = 4 bytes
-enum MSG_TYPES {
-  MSG_MEASUREMENT = 0,
-  MSG_TEXT = 1,
-};
 
-struct measurement_t{
-  uint32_t seq_no;
-  uint32_t millis;
-  uint32_t speed;
-  uint32_t direction;
-  uint32_t voltage;
-};
-
-struct message_t {
-  MSG_TYPES msg_type;  // 0 = measurement, 1 = text
-  union {
-    measurement_t measurement;
-    char text[20];
-  } msg;
-};
 message_t message;
 measurement_t measurement;
 char text[26];
@@ -264,51 +189,6 @@ uint32_t finish_position = 0;   // Lap length e.g. start/finish point
 uint32_t brake_point = 0;       // brake point before a curve
 uint32_t brake_segment = 0;     // segment towards which we are breaking
 
-//---------------------------------------------------------------
-// Macros to log data to either serial and/or SD-card.
-// They are macros because then we don't have to define overloaded
-// functions for all possible datatypes.
-//    LOG_SERIAL(x)    and LOG_SDCARD(x)
-//    LOG_SERIAL_LN(x) and LOG_SDCARD_LN(X)   with newline
-//    LOG(x)   to both, comma-separation will be added
-//    LOG_LN(x)  to both
-#if ECHO_TO_SERIAL 
-#define LOG_SERIAL_LN(x) Serial.println(x);
-#define LOG_SERIAL_LN2(x,y) Serial.println(x,y);
-#define LOG_SERIAL(x) Serial.print(x);
-#else
-#define LOG_SERIAL_LN(x)
-#define LOG_SERIAL_LN2(x,y)
-#define LOG_SERIAL(x)
-#endif
-
-#if SD_CARD_ON 
-#define LOG_SDCARD_LN(x) logfile.println(x);
-#define LOG_SDCARD(x) logfile.print(x);
-#else
-#define LOG_SDCARD_LN(x)
-#define LOG_SDCARD(x)
-#endif
-
-#define LOG(x) LOG_SERIAL(x) LOG_SERIAL(", ") LOG_SDCARD(x) LOG_SDCARD(", ")
-#define LOG_LN(x) LOG_SERIAL_LN(x) LOG_SDCARD_LN(x)
-
-//----------------------------------------------------------------
-// Fatal error: print message to serial, red LED on, stop program.
-// Stop motor.
-void error(const char *str)
-{
-  // Better switch off motor:
-  motor_off_brake();
-
-  Serial.print("error: ");
-  LOG_SERIAL_LN(str);
-  
-  // red LED indicates error
-  digitalWrite(red_LED_PIN, HIGH);
-  
-  while(1);
-}
 
 //----------------------------------------------------------------
 // Decode and act on IR codes
@@ -417,44 +297,6 @@ void translateIR() // takes action based on IR code received
 } //END translateIR
 #endif
 
-//------------------------------------------------------------------------
-// Motor on full speed:
-void motor_on()
-{
-  digitalWrite(motor_In1_PIN, HIGH);
-  digitalWrite(motor_In2_PIN, LOW);
-  digitalWrite(motor_PWM_PIN, HIGH);
-}
-
-//------------------------------------------------------------------------
-// Motor on with specified duty cycle:
-// Parameters:
-//   int dutycycle  -- PWM setting (0..255)
-void motor_on_pwm(int dutycycle)
-{
-  analogWrite(motor_In1_PIN, dutycycle);
-  digitalWrite(motor_In2_PIN, LOW);
-  digitalWrite(motor_PWM_PIN, HIGH);
-}
-
-//------------------------------------------------------------------------
-// Motor off, coasting:
-void motor_off_coast()
-{
-  analogWrite(motor_In1_PIN, 0);
-  digitalWrite(motor_In1_PIN, LOW);
-  digitalWrite(motor_In2_PIN, LOW);
-  digitalWrite(motor_PWM_PIN, HIGH);
-}
-
-//------------------------------------------------------------------------
-// Motor off, hard brake:
-void motor_off_brake()
-{
-  digitalWrite(motor_In1_PIN, HIGH);
-  digitalWrite(motor_In2_PIN, LOW);
-  digitalWrite(motor_PWM_PIN, LOW);
-}
 
 //------------------------------------------------------------------------
 // Interrupt service routine for the wheel encoder:
@@ -476,17 +318,9 @@ void setup(void)
   pinMode(CSN_Radio_PIN, OUTPUT);
 
   pinMode(CE_Radio_PIN, OUTPUT);
-  
-  pinMode(motor_In1_PIN, OUTPUT);
-  pinMode(motor_In2_PIN, OUTPUT);
-  pinMode(motor_PWM_PIN, OUTPUT); 
-  pinMode(motor_STBY_PIN, OUTPUT); 
-  digitalWrite(motor_STBY_PIN, HIGH);
-  // Set PWM frequency.  The motor diver can handle 100 kHz max.
-  // Setting the frequency on one pin changes it for all other
-  // pins on this timer as well (5, 6, 9, 10, 20, 21, 22, 23)
-  analogWriteFrequency(motor_In1_PIN, PWM_FREQUENCY);
-  
+   
+  motor_init();
+ 
   // PID
   PID_input = 0.0;
   PID_setpoint = MOTOR_TARGET_SPEED * PID_INTERVAL / 10 ;
@@ -710,7 +544,7 @@ void loop(void)
     // straight and limit the stored lap to that
     LOG(msec_since_start)
     LOG_LN("Writing Lap Data")
-    for (int i=0; i < seq_cnt ; i++)
+    for (uint32_t i=0; i < seq_cnt ; i++)
     {
       LOG(i)
       LOG(lap[i].position)
@@ -859,7 +693,7 @@ void loop(void)
 //    motor_on_pwm(255);
 
     int32_t dirReading;
-    float dirChange;
+    float dirChange = 0.0;
 #if BNO055_ON
     // Read the acceleration and orientation:
     bno.getEvent(&accel_orient);
@@ -976,7 +810,7 @@ void loop(void)
               straight[straight_cnt].direction = lap[seq_cnt-2].direction;
             
               // check if new straight has been driven/measured before
-              for (int i=0; i < straight_cnt; i++)
+              for (uint32_t i=0; i < straight_cnt; i++)
               {
                 if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 8)&&(abs(straight[i].length - straight[straight_cnt].length) < 40))
                 {
@@ -1127,16 +961,15 @@ void loop(void)
     message.msg.measurement = (measurement_t){seq_no, msec_since_start, speedReading, dirReading, sp /*trackVoltReading*/};
   
     LOG_SERIAL_LN(F("Transmitting on radio"));
-    radio.send((uint8_t *)&message, sizeof(message_t));
-    radio.waitPacketSent();
+    telemetry.send_msg_wait((uint8_t *)&message);
  
     // Did we receive something from the PC? 
     uint8_t buf[RH_NRF24_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
-    while (radio.waitAvailableTimeout(0))
+    while (telemetry.waitAvailableTimeout(0))
     { 
       // Should be a reply message for us now   
-      if (radio.recv(buf, &len))
+      if (telemetry.recv(buf, &len))
       {
   //      Serial.print("got reply: ");
   //      Serial.println((char*)buf);
@@ -1194,7 +1027,6 @@ void loop(void)
     }
     
     int32_t dirReading;
-    float dirChange;
 #if BNO055_ON
     // Read the acceleration and orientation:
     bno.getEvent(&accel_orient);
@@ -1269,7 +1101,8 @@ void loop(void)
           if (sp > lap[seq_cnt+i].wanted_speed)
           {
             // add 5 speed intervals to brake distance as it takes about 50ms before car starts slowing down
-            int bp = lap[seq_cnt+i].position - (uint)round((sp/5)*(5)) - (uint)round(((sp*sp/2.5) - (lap[seq_cnt+i].wanted_speed*lap[seq_cnt+i].wanted_speed/2.5))/(2*brake_faktor));
+            // TODO: ??? can bp ever be negative?  I changed "int bp" to "uint32_t bp" -- ALEX
+            uint32_t bp = lap[seq_cnt+i].position - (uint)round((sp/5)*(5)) - (uint)round(((sp*sp/2.5) - (lap[seq_cnt+i].wanted_speed*lap[seq_cnt+i].wanted_speed/2.5))/(2*brake_faktor));
             // take closest brake point
             if (bp < brake_point)
             {
