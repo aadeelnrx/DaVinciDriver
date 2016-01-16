@@ -559,7 +559,57 @@ void loop(void)
       }
     }
 
-    // set current leg segment counter to 0 e.g. start/finish
+    // consolidate Lap
+    bool decrease = true;
+    int new_seq_cnt = 0;
+    int i = 0;
+    int j = 0;
+    while (i < max_seq_cnt)
+    {
+      if (decrease == true) // decrease speed
+      {
+        while (lap[j].wanted_speed >= lap[1+j].wanted_speed)
+        {
+          j++;
+        }
+        lap[new_seq_cnt].length = lap[j].position - lap[new_seq_cnt].position;
+        new_seq_cnt++;
+        lap[new_seq_cnt].position = lap[j].position;
+        lap[new_seq_cnt].length = lap[j].length;
+        lap[new_seq_cnt].direction = lap[j].direction;
+        lap[new_seq_cnt].segment_type = lap[j].segment_type;
+        lap[new_seq_cnt].wanted_speed = lap[j].wanted_speed;
+        new_seq_cnt++;
+        lap[new_seq_cnt].position = lap[j+1].position;
+        decrease = false;
+        i = j;
+      } else //increase speed
+      {
+        while (lap[j].wanted_speed <= lap[1+j].wanted_speed)
+        {
+          j++;
+        }
+        lap[new_seq_cnt].direction = lap[j].direction;
+        lap[new_seq_cnt].segment_type = lap[j].segment_type;
+        lap[new_seq_cnt].wanted_speed = lap[j].wanted_speed;
+        decrease = true;
+        i = j;
+      }
+    }
+    max_seq_cnt = new_seq_cnt;
+
+    LOG(msec_since_start)
+    LOG_LN("Writing Consolidated Lap Data")
+    for (int i=0; i < max_seq_cnt ; i++)
+    {
+      LOG(i)
+      LOG(lap[i].position)
+      LOG(lap[i].length)
+      LOG(lap[i].direction)
+      LOG(lap[i].segment_type)
+      LOG(lap[i].wanted_speed)
+      LOG_LN()    
+    }    // set current leg segment counter to 0 e.g. start/finish
     seq_cnt = 0;
 
     // set the wanted speed for this segment
