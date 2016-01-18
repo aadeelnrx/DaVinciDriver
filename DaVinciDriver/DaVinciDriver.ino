@@ -49,6 +49,13 @@ double PID_max_change = 25;
 // Acceleration and orientation
 sensors_event_t accel_orient;
 
+// Flag if the BNO055 sensor can be used. 
+// The BNO can only be used when it has power applied (5V).
+// This is only the case when the car is on the track and gets
+// power from there, but not when only the Teensy is powered 
+// by USB.  Then the BNO has no power.  Driving the Teensy 
+// output pins to the BNO can (and has) locked up the BNO.
+bool bno_on = false;
 // BNO055 sensor and the data we read from it:
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 imu::Vector<3> acceleration;
@@ -248,19 +255,29 @@ void setup(void)
   }
   LOG_SERIAL_LN("DaVinciDriver");
 
-#if BNO055_ON
-  // BNO055 IMU initialisation
-  // Done here (4 seconds after serial initialisation) so that
-  // we can print to serial here.
-  LOG_SERIAL_LN("Before bno begin");
-  if (!bno.begin())
+  // Find out if the car is on the track and gets power from there.
+  // Only then drive the BNO:
+  trackVoltReading = analogRead(track_volt_PIN);    
+  if (trackVoltReading > 100)  // 400 is ca. 10V -> 100 is ca. 2.5V
   {
-    Serial.println("bno error");
-    //There was a problem detecting the BNO055 ... check your connections
-    error("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    bno_on = true;
+    // BNO055 IMU initialisation
+    // Done here (4 seconds after serial initialisation) so that
+    // we can print to serial here.
+    LOG_SERIAL_LN("Before bno begin");
+    if (!bno.begin())
+    {
+      Serial.println("bno error");
+      //There was a problem detecting the BNO055 ... check your connections
+      error("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    }
+    LOG_SERIAL_LN("After bno begin");
   }
-  LOG_SERIAL_LN("After bno begin");
-#endif
+  
+  Serial.print("BNO is: ");
+  Serial.println(bno_on ? "on" : "off");
+  while(1);
+  
   // last second: fast blinking
   // The BNO055 needs one second to initialise anyway.
   for (int i=0; i < 10; i++)
@@ -271,10 +288,11 @@ void setup(void)
     delay(50);
   }
   
-#if BNO055_ON
-// This has to be done at least one second after bno.begin():
-  bno.setExtCrystalUse(true);  
-#endif
+  if (bno_on)
+  {
+    // This has to be done at least one second after bno.begin():
+    bno.setExtCrystalUse(true);  
+  }
 
 #if WAIT_TO_START
   Serial.println("Type any character to start");
@@ -636,165 +654,167 @@ void loop(void)
     // for handcontroller running of the car 
 //    motor_on_pwm(255);
 
-    int32_t dirReading;
+    int32_t dirReading = 0;
     float dirChange = 0.0;
-#if BNO055_ON
-    // Read the acceleration and orientation:
-    bno.getEvent(&accel_orient);
-
-    dirReading = uint32_t(accel_orient.orientation.x);
-
-    // Start measuring after BNO055 starts giving real values
-    if ((dirReading > 0)&&(measuring == false))
+    if (bno_on)
     {
-      measuring = true;                                           // BNO055 is giving real values so measuring can start
-      
-      // set-up first segment
-      lap[seq_cnt].position = 0;                                  // start/finish is at position 0
-      lap[seq_cnt].direction = dirReading;
-      lap[seq_cnt].segment_type = STRAIGHT;
-      lap[seq_cnt].wanted_speed = segment_types_speed[STRAIGHT];  // assumption that start/finish is on a straight
-      seq_cnt++;
-
-      // initialise measurement history variables
-      for (int i=0; i < 9; i++)
+      // Read the acceleration and orientation:
+      bno.getEvent(&accel_orient);
+  
+      dirReading = uint32_t(accel_orient.orientation.x);
+  
+      // Start measuring after BNO055 starts giving real values
+      if ((dirReading > 0)&&(measuring == false))
       {
-        lap_hist[i].position = 0;                               // start/finish is at position 0
-        lap_hist[i].direction = dirReading;
-        lap_hist[i].segment_type = STRAIGHT;          
-        lap_hist[i].wanted_speed = segment_types_speed[STRAIGHT];
-      }        
-    }
-    
-    // Measuring whenever the direction changes once the BNO has started up
-    if (measuring == true)
-    {
-
-      // still needs fixing
-      dirOverflow = 0;
-      if ((lap[seq_cnt-1].direction > 270) && (dirReadingOld >= lap[seq_cnt-1].direction) && (dirReading <90))
-      {
-        dirOverflow = 360;
-      }
-      if ((lap[seq_cnt-1].direction < 90) && (dirReadingOld <= lap[seq_cnt-1].direction) && (dirReading >270))
-      {
-        dirOverflow = -360;
-      }
-      dirReading += dirOverflow;  
-      dirReadingOld = dirReading;
-
-      if ( abs(dirReading - lap[seq_cnt-1].direction) > 1)
-      {
-        // rotate history of last 10 measurements (FIFO)
-        for (int i=8; i >= 0 ; i--)
+        measuring = true;                                           // BNO055 is giving real values so measuring can start
+        
+        // set-up first segment
+        lap[seq_cnt].position = 0;                                  // start/finish is at position 0
+        lap[seq_cnt].direction = dirReading;
+        lap[seq_cnt].segment_type = STRAIGHT;
+        lap[seq_cnt].wanted_speed = segment_types_speed[STRAIGHT];  // assumption that start/finish is on a straight
+        seq_cnt++;
+  
+        // initialise measurement history variables
+        for (int i=0; i < 9; i++)
         {
-          lap_hist[i+1].position = lap_hist[i].position;
-          lap_hist[i+1].direction = lap_hist[i].direction;
-          lap_hist[i+1].segment_type = lap_hist[i].segment_type;     
-          lap_hist[i+1].wanted_speed = lap_hist[i].wanted_speed;     
+          lap_hist[i].position = 0;                               // start/finish is at position 0
+          lap_hist[i].direction = dirReading;
+          lap_hist[i].segment_type = STRAIGHT;          
+          lap_hist[i].wanted_speed = segment_types_speed[STRAIGHT];
         }        
-        // store current measurement
-        lap_hist[0].position = distance;
-        lap_hist[0].direction = dirReading;
-        // determine the relative direction change during the last 10 measurements (to smoothen the measurement result curve)
-        dirChange = (((float)abs(dirReading - lap_hist[9].direction))/(float)(distance -lap_hist[9].position));
-        if (dirChange < 0.05)
-        { 
-          lap_hist[0].segment_type = STRAIGHT;
-          lap_hist[0].wanted_speed = segment_types_speed[STRAIGHT];
-        }else if (dirChange < 0.087)
-        { 
-          lap_hist[0].segment_type = KURVE_4;
-          lap_hist[0].wanted_speed = segment_types_speed[KURVE_4];
-        }else if (dirChange < 0.125)
-        { 
-          lap_hist[0].segment_type = KURVE_3;
-          lap_hist[0].wanted_speed = segment_types_speed[KURVE_3];
-        }else if (dirChange < 0.25)
-        { 
-          lap_hist[0].segment_type = KURVE_2;
-          lap_hist[0].wanted_speed = segment_types_speed[KURVE_2];
-        }else if (dirChange < 0.5)
-        { 
-          lap_hist[0].segment_type = KURVE_1;
-          lap_hist[0].wanted_speed = segment_types_speed[KURVE_1];
-        }else
-        { 
-          lap_hist[0].segment_type = SLIDE;
-          lap_hist[0].wanted_speed = segment_types_speed[SLIDE];
-        }   
-
-        // Create new lap_segment in case direction has changed in the last 6 measurements (to avoid short peeks/drops)
-        if ((lap_hist[0].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[1].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[2].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[3].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[4].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[5].segment_type != lap[seq_cnt-1].segment_type))
+      }
+      
+      // Measuring whenever the direction changes once the BNO has started up
+      if (measuring == true)
+      {
+  
+        // still needs fixing
+        dirOverflow = 0;
+        if ((lap[seq_cnt-1].direction > 270) && (dirReadingOld >= lap[seq_cnt-1].direction) && (dirReading <90))
         {
-          // In case of dirOverflow reverse the dirOverflow change done
-          if (dirOverflow != 0)
+          dirOverflow = 360;
+        }
+        if ((lap[seq_cnt-1].direction < 90) && (dirReadingOld <= lap[seq_cnt-1].direction) && (dirReading >270))
+        {
+          dirOverflow = -360;
+        }
+        dirReading += dirOverflow;  
+        dirReadingOld = dirReading;
+  
+        if ( abs(dirReading - lap[seq_cnt-1].direction) > 1)
+        {
+          // rotate history of last 10 measurements (FIFO)
+          for (int i=8; i >= 0 ; i--)
           {
-            for (int i=0; i < 9; i++)
+            lap_hist[i+1].position = lap_hist[i].position;
+            lap_hist[i+1].direction = lap_hist[i].direction;
+            lap_hist[i+1].segment_type = lap_hist[i].segment_type;     
+            lap_hist[i+1].wanted_speed = lap_hist[i].wanted_speed;     
+          }        
+          // store current measurement
+          lap_hist[0].position = distance;
+          lap_hist[0].direction = dirReading;
+          // determine the relative direction change during the last 10 measurements (to smoothen the measurement result curve)
+          dirChange = (((float)abs(dirReading - lap_hist[9].direction))/(float)(distance -lap_hist[9].position));
+          if (dirChange < 0.05)
+          { 
+            lap_hist[0].segment_type = STRAIGHT;
+            lap_hist[0].wanted_speed = segment_types_speed[STRAIGHT];
+          }else if (dirChange < 0.087)
+          { 
+            lap_hist[0].segment_type = KURVE_4;
+            lap_hist[0].wanted_speed = segment_types_speed[KURVE_4];
+          }else if (dirChange < 0.125)
+          { 
+            lap_hist[0].segment_type = KURVE_3;
+            lap_hist[0].wanted_speed = segment_types_speed[KURVE_3];
+          }else if (dirChange < 0.25)
+          { 
+            lap_hist[0].segment_type = KURVE_2;
+            lap_hist[0].wanted_speed = segment_types_speed[KURVE_2];
+          }else if (dirChange < 0.5)
+          { 
+            lap_hist[0].segment_type = KURVE_1;
+            lap_hist[0].wanted_speed = segment_types_speed[KURVE_1];
+          }else
+          { 
+            lap_hist[0].segment_type = SLIDE;
+            lap_hist[0].wanted_speed = segment_types_speed[SLIDE];
+          }   
+  
+          // Create new lap_segment in case direction has changed in the last 6 measurements (to avoid short peeks/drops)
+          if ((lap_hist[0].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[1].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[2].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[3].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[4].segment_type != lap[seq_cnt-1].segment_type)&&(lap_hist[5].segment_type != lap[seq_cnt-1].segment_type))
+          {
+            // In case of dirOverflow reverse the dirOverflow change done
+            if (dirOverflow != 0)
             {
-              lap_hist[i].direction -= dirOverflow;
+              for (int i=0; i < 9; i++)
+              {
+                lap_hist[i].direction -= dirOverflow;
+              }        
+            }
+            lap[seq_cnt].position = lap_hist[5].position;                             // set starting position of next segment
+            lap[seq_cnt-1].length = lap[seq_cnt].position - lap[seq_cnt-1].position;  // calculate and set length of last segment
+            lap[seq_cnt].direction = lap_hist[5].direction;                           // set other values of next segment
+            lap[seq_cnt].segment_type = lap_hist[5].segment_type;
+            lap[seq_cnt].wanted_speed = lap_hist[5].wanted_speed;
+  
+            // to avoid short segments
+            if (lap[seq_cnt-1].length > 20)
+            {
+              seq_cnt++;           
+   
+              // If new lap segment is a straight, store a new straight and do lap recognition based on the straights
+              if (lap[seq_cnt-2].segment_type == STRAIGHT)
+              {
+                straight[straight_cnt].position = lap[seq_cnt-2].position;
+                straight[straight_cnt].length = lap[seq_cnt-2].length;
+                straight[straight_cnt].direction = lap[seq_cnt-2].direction;
+              
+                // check if new straight has been driven/measured before
+                for (uint32_t i=0; i < straight_cnt; i++)
+                {
+                  if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 8)&&(abs(straight[i].length - straight[straight_cnt].length) < 40))
+                  {
+                    lap_found = true;                                                         // lap has been detected
+                    finish_position = straight[straight_cnt].position - straight[i].position; // subtracting found straight from current straight is lap length e.g. finish position
+                  }
+                }
+                straight_cnt++;
+              }
+            }else
+            {
+              // if last segment was too short and new segments is tighter => change segment_type to tighter type
+              if (lap_hist[5].wanted_speed < lap[seq_cnt-1].wanted_speed)
+              {
+                lap[seq_cnt-1].segment_type = lap_hist[5].segment_type;            
+                lap[seq_cnt-1].wanted_speed = lap_hist[5].wanted_speed;
+              }
             }        
           }
-          lap[seq_cnt].position = lap_hist[5].position;                             // set starting position of next segment
-          lap[seq_cnt-1].length = lap[seq_cnt].position - lap[seq_cnt-1].position;  // calculate and set length of last segment
-          lap[seq_cnt].direction = lap_hist[5].direction;                           // set other values of next segment
-          lap[seq_cnt].segment_type = lap_hist[5].segment_type;
-          lap[seq_cnt].wanted_speed = lap_hist[5].wanted_speed;
-
-          // to avoid short segments
-          if (lap[seq_cnt-1].length > 20)
-          {
-            seq_cnt++;           
- 
-            // If new lap segment is a straight, store a new straight and do lap recognition based on the straights
-            if (lap[seq_cnt-2].segment_type == STRAIGHT)
-            {
-              straight[straight_cnt].position = lap[seq_cnt-2].position;
-              straight[straight_cnt].length = lap[seq_cnt-2].length;
-              straight[straight_cnt].direction = lap[seq_cnt-2].direction;
-            
-              // check if new straight has been driven/measured before
-              for (uint32_t i=0; i < straight_cnt; i++)
-              {
-                if ((straight[straight_cnt].length>100)&&(abs(straight[i].direction - straight[straight_cnt].direction) < 8)&&(abs(straight[i].length - straight[straight_cnt].length) < 40))
-                {
-                  lap_found = true;                                                         // lap has been detected
-                  finish_position = straight[straight_cnt].position - straight[i].position; // subtracting found straight from current straight is lap length e.g. finish position
-                }
-              }
-              straight_cnt++;
-            }
-          }else
-          {
-            // if last segment was too short and new segments is tighter => change segment_type to tighter type
-            if (lap_hist[5].wanted_speed < lap[seq_cnt-1].wanted_speed)
-            {
-              lap[seq_cnt-1].segment_type = lap_hist[5].segment_type;            
-              lap[seq_cnt-1].wanted_speed = lap_hist[5].wanted_speed;
-            }
-          }        
         }
       }
-    }
-#endif  
+   
   
 #if BNO055_TEST_ON
-    // Possible vector values can be:
-    // - VECTOR_ACCELEROMETER - m/s^2
-    // - VECTOR_MAGNETOMETER  - uT
-    // - VECTOR_GYROSCOPE     - rad/s
-    // - VECTOR_EULER         - degrees
-    // - VECTOR_LINEARACCEL   - m/s^2
-    // - VECTOR_GRAVITY       - m/s^2
-    acceleration  = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    lacceleration = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-    gravity       = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
-    magnometer    = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
-    gyroscope     = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-    euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    quat          = bno.getQuat();
+      // Possible vector values can be:
+      // - VECTOR_ACCELEROMETER - m/s^2
+      // - VECTOR_MAGNETOMETER  - uT
+      // - VECTOR_GYROSCOPE     - rad/s
+      // - VECTOR_EULER         - degrees
+      // - VECTOR_LINEARACCEL   - m/s^2
+      // - VECTOR_GRAVITY       - m/s^2
+      acceleration  = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+      lacceleration = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+      gravity       = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+      magnometer    = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+      gyroscope     = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+      euler         = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+      quat          = bno.getQuat();
 #endif  
-  
+    }  // if (bno_on)
+    
 #if IR_ON
     if (irrecv.decode(&ir_results)) // have we received an IR signal?
     {
@@ -970,14 +990,14 @@ void loop(void)
       LOG_LN()
     }
     
-    int32_t dirReading;
-#if BNO055_ON
-    // Read the acceleration and orientation:
-    bno.getEvent(&accel_orient);
+    int32_t dirReading = 0;
+    if (bno_on)
+    {
+      // Read the acceleration and orientation:
+      bno.getEvent(&accel_orient);
 
-    dirReading = uint32_t(accel_orient.orientation.x);
-     
-#endif  
+      dirReading = uint32_t(accel_orient.orientation.x);
+    }
  
 #if IR_ON
     if (irrecv.decode(&ir_results)) // have we received an IR signal?
