@@ -13,11 +13,12 @@
  */
 
 #include "PinsParameters.h"
+#include <IRremote.h>
+#include "Infrared.h"
 #include "Logging.h"
 #include "Motor.h"
 #include "Telemetry.h"
 #include <SdFat.h>
-#include <IRremote.h>
 #include <Metro.h>
 #include <PID_v1.h>
 #include <SPI.h>
@@ -61,7 +62,7 @@ imu::Quaternion quat;
 // Infrared remote control receiver
 #if IR_ON
 IRrecv irrecv(IR_receiver);
-decode_results results;
+decode_results ir_results;
 #endif
 
 // Track Voltage Reading and Direction Correction, later is needed due to 360->0 overflow
@@ -189,113 +190,6 @@ uint32_t finish_position = 0;   // Lap length e.g. start/finish point
 uint32_t brake_point = 0;       // brake point before a curve
 uint32_t brake_segment = 0;     // segment towards which we are breaking
 
-
-//----------------------------------------------------------------
-// Decode and act on IR codes
-#if IR_ON
-void translateIR() // takes action based on IR code received 
-{
-  switch(results.value)
-  {
-  case 0xFFA25D: 
-    LOG_SERIAL_LN(" CH-"); 
-    strcpy(irButton," CH-");
-    break;
-  case 0xFF629D:
-    // Lights on/off 
-    LOG_SERIAL_LN(" CH");   
-    strcpy(irButton," CH");
-    break;
-  case 0xFFE21D: 
-    LOG_SERIAL_LN(" CH+");  
-    strcpy(irButton," CH+");
-    break;
-  case 0xFF22DD: 
-    LOG_SERIAL_LN(" REVERSE");    
-    strcpy(irButton," REVERSE");
-    break;
-  case 0xFF02FD: 
-    LOG_SERIAL_LN(" FORWARD");    
-    strcpy(irButton," FORWARD");
-    break;
-  case 0xFFC23D: 
-    // Race Start
-    LOG_SERIAL_LN(" PLAY/PAUSE"); 
-    strcpy(irButton," PLAY/PAUSE");
-    break;
-  case 0xFFE01F: 
-    LOG_SERIAL_LN(" -");    
-    strcpy(irButton," -");
-    break;
-  case 0xFFA857: 
-    LOG_SERIAL_LN(" +");    
-    strcpy(irButton," +");
-    break;
-  case 0xFF906F: 
-    // Race Stop
-    LOG_SERIAL_LN(" EQ");   
-    strcpy(irButton," EQ");
-    break;
-  case 0xFF6897: 
-    LOG_SERIAL_LN(" 0");    
-    strcpy(irButton," 0");
-    break;
-  case 0xFF9867: 
-    LOG_SERIAL_LN(" 100+"); 
-    strcpy(irButton," 100+");
-    break;
-  case 0xFFB04F: 
-    LOG_SERIAL_LN(" 200+");   
-    strcpy(irButton," 200+");
-    break;
-  case 0xFF30CF: 
-    LOG_SERIAL_LN(" 1");    
-    strcpy(irButton," 1");
-    break;
-  case 0xFF18E7: 
-    LOG_SERIAL_LN(" 2");    
-    strcpy(irButton," 2");
-    break;
-  case 0xFF7A85: 
-    LOG_SERIAL_LN(" 3");    
-    strcpy(irButton," 3");
-    break;
-  case 0xFF10EF: 
-    LOG_SERIAL_LN(" 4");    
-    strcpy(irButton," 4");
-    break;
-  case 0xFF38C7: 
-    LOG_SERIAL_LN(" 5");    
-    strcpy(irButton," 5");
-    break;
-  case 0xFF5AA5: 
-    LOG_SERIAL_LN(" 6");    
-    strcpy(irButton," 6");
-    break;
-  case 0xFF42BD: 
-    LOG_SERIAL_LN(" 7");    
-    strcpy(irButton," 7");
-    break;
-  case 0xFF4AB5: 
-    LOG_SERIAL_LN(" 8");    
-    strcpy(irButton," 8");
-    break;
-  case 0xFF52AD: 
-    LOG_SERIAL_LN(" 9");    
-    strcpy(irButton," 9");
-    break;
-  case 0xFFFFFFFF: 
-    LOG_SERIAL_LN(" REPEAT"); 
-    strcpy(irButton," REPEAT");
-    break;  
-
-  default: 
-    LOG_SERIAL(" other button   :");
-    LOG_SERIAL_LN2(results.value, HEX);
-    strcpy(irButton," other button   :");
-  }// End Case
-} //END translateIR
-#endif
 
 
 //------------------------------------------------------------------------
@@ -562,7 +456,7 @@ void loop(void)
     // consolidate Lap
     bool decrease = true;
     int new_seq_cnt = 0;
-    int i = 0;
+    uint32_t i = 0;
     int j = 0;
     while (i < max_seq_cnt)
     {
@@ -600,7 +494,7 @@ void loop(void)
 
     LOG(msec_since_start)
     LOG_LN("Writing Consolidated Lap Data")
-    for (int i=0; i < max_seq_cnt ; i++)
+    for (uint32_t i=0; i < max_seq_cnt ; i++)
     {
       LOG(i)
       LOG(lap[i].position)
@@ -902,10 +796,10 @@ void loop(void)
 #endif  
   
 #if IR_ON
-    if (irrecv.decode(&results)) // have we received an IR signal?
+    if (irrecv.decode(&ir_results)) // have we received an IR signal?
     {
 //    LOG_SERIAL_LN(results.value, HEX);  UN Comment to see raw values
-      translateIR(); 
+      translateIR(ir_results, irButton); 
       irrecv.resume(); // receive the next value
     }  
 #endif
@@ -1086,10 +980,10 @@ void loop(void)
 #endif  
  
 #if IR_ON
-    if (irrecv.decode(&results)) // have we received an IR signal?
+    if (irrecv.decode(&ir_results)) // have we received an IR signal?
     {
 //    LOG_SERIAL_LN(results.value, HEX);  UN Comment to see raw values
-      translateIR(); 
+      translateIR(ir_results, irButton); 
       irrecv.resume(); // receive the next value
     }  
 #endif

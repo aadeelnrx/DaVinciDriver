@@ -4,7 +4,7 @@
 #define ECHO_TO_SERIAL   1  // echo data to serial port
 #define WAIT_TO_START    0  // Wait for serial input in setup()
 #define RADIO_ON         0  // Radio transmission
-#define IR_ON            1  // IR transmission
+#define IR_ON            0  // IR transmission
 #define SD_CARD_ON       1  // Logging to SD card
 #define TEST_LOGGING_ON  0  //
 #define BNO055_ON        1  // Sensor
