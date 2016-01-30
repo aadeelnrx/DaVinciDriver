@@ -75,6 +75,8 @@ decode_results ir_results;
 // Track Voltage Reading and Direction Correction, later is needed due to 360->0 overflow
 // not properly working yet
 int trackVoltReading;
+bool trackPowerPresent;
+
 int dirOverflow = 0;
 uint32_t dirReadingOld;
 
@@ -219,6 +221,12 @@ void setup(void)
   pinMode(CSN_Radio_PIN, OUTPUT);
 
   pinMode(CE_Radio_PIN, OUTPUT);
+
+  // Find out if the car is on the track and gets power from there.
+  // Only then drive the BNO, SD-card, and Pololu:
+  trackVoltReading = analogRead(track_volt_PIN);
+  trackPowerPresent = (trackVoltReading > 100);   // 400 is ca. 10V -> 100 is ca. 2.5V
+  
    
   motor_init();
  
@@ -255,11 +263,8 @@ void setup(void)
   }
   LOG_SERIAL_LN("DaVinciDriver");
 
-  // Find out if the car is on the track and gets power from there.
-  // Only then drive the BNO:
-  trackVoltReading = analogRead(track_volt_PIN);    
-  if (trackVoltReading > 100)  // 400 is ca. 10V -> 100 is ca. 2.5V
-  {
+
+  if (trackPowerPresent == true)  {
     bno_on = true;
     // BNO055 IMU initialisation
     // Done here (4 seconds after serial initialisation) so that
