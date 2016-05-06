@@ -275,8 +275,8 @@ void setup(void)
   }
   
   Serial.print("BNO is: ");
-  Serial.println(bno_on ? "on" : "off");
-  while(1);
+  Serial.println(bno_on ? "on" : "off (no track voltage?)");
+//  while(1);
   
   // last second: fast blinking
   // The BNO055 needs one second to initialise anyway.
