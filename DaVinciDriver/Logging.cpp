@@ -1,6 +1,7 @@
 #include "Logging.h"
 #include "Motor.h"
 #include <Arduino.h>
+#include "PinsParameters.h"
 
 
 //----------------------------------------------------------------
